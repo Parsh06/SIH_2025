@@ -1,0 +1,408 @@
+{
+  "en": {
+    "common": {
+      "welcome": "Welcome",
+      "dashboard": "Dashboard",
+      "weather": "Weather",
+      "chat": "Chat",
+      "activity": "Activity",
+      "knowledge": "Knowledge",
+      "profile": "Profile",
+      "notifications": "Notifications",
+      "crops": "Crops",
+      "signin": "Sign In",
+      "signup": "Sign Up",
+      "logout": "Logout",
+      "save": "Save",
+      "cancel": "Cancel",
+      "submit": "Submit",
+      "search": "Search",
+      "loading": "Loading...",
+      "error": "Error",
+      "success": "Success",
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "tomorrow": "Tomorrow",
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low",
+      "urgent": "Urgent",
+      "normal": "Normal"
+    },
+    "landing": {
+      "title": "Krishi Sakhi",
+      "subtitle": "Your AI-Powered Farming Assistant",
+      "description": "Get personalized farming advice, weather updates, and crop management guidance in Malayalam and English",
+      "getStarted": "Get Started",
+      "learnMore": "Learn More",
+      "features": {
+        "weather": {
+          "title": "Weather Insights",
+          "description": "Real-time weather updates and farming-specific forecasts"
+        },
+        "ai": {
+          "title": "AI Assistant",
+          "description": "Get instant answers to your farming questions"
+        },
+        "knowledge": {
+          "title": "Knowledge Hub",
+          "description": "Access comprehensive farming guides and best practices"
+        },
+        "activity": {
+          "title": "Activity Tracking",
+          "description": "Log and monitor your farming activities"
+        }
+      },
+      "testimonials": {
+        "title": "What Farmers Say",
+        "ravi": {
+          "name": "Ravi Kumar",
+          "location": "Thrissur, Kerala",
+          "text": "Krishi Sakhi helped me increase my rice yield by 30% with better timing and pest management advice."
+        },
+        "priya": {
+          "name": "Priya Nair",
+          "location": "Kottayam, Kerala",
+          "text": "The weather alerts saved my coconut plantation from unexpected rains. Very reliable app!"
+        }
+      },
+      "stats": {
+        "farmers": "10,000+ Farmers",
+        "crops": "50+ Crops Supported",
+        "accuracy": "95% Weather Accuracy"
+      }
+    },
+    "auth": {
+      "signin": {
+        "title": "Sign In to Krishi Sakhi",
+        "subtitle": "Welcome back! Enter your details to access your farming dashboard",
+        "email": "Email or Phone Number",
+        "password": "Password",
+        "forgotPassword": "Forgot Password?",
+        "noAccount": "Don't have an account?",
+        "signupLink": "Sign up here"
+      },
+      "signup": {
+        "title": "Join Krishi Sakhi",
+        "subtitle": "Create your account to start your smart farming journey",
+        "fullName": "Full Name",
+        "phone": "Phone Number",
+        "email": "Email Address",
+        "password": "Password",
+        "confirmPassword": "Confirm Password",
+        "location": "Location",
+        "detectLocation": "Detect My Location",
+        "landSize": "Land Size (acres)",
+        "soilType": "Soil Type",
+        "cropsGrown": "Crops Grown",
+        "irrigationMethod": "Irrigation Method",
+        "haveAccount": "Already have an account?",
+        "signinLink": "Sign in here",
+        "soilTypes": {
+          "alluvial": "Alluvial",
+          "red": "Red Soil",
+          "black": "Black Soil",
+          "laterite": "Laterite",
+          "coastal": "Coastal Sand"
+        },
+        "crops": {
+          "rice": "Rice",
+          "coconut": "Coconut",
+          "rubber": "Rubber",
+          "spices": "Spices",
+          "vegetables": "Vegetables"
+        },
+        "irrigation": {
+          "drip": "Drip Irrigation",
+          "sprinkler": "Sprinkler",
+          "flood": "Flood Irrigation",
+          "rainfed": "Rain-fed"
+        }
+      }
+    },
+    "dashboard": {
+      "greeting": "Good morning",
+      "quickStats": {
+        "title": "Quick Stats",
+        "activeCrops": "Active Crops",
+        "landArea": "Land Area",
+        "todayTasks": "Today's Tasks"
+      },
+      "weather": {
+        "title": "Weather Today",
+        "humidity": "Humidity",
+        "windSpeed": "Wind Speed",
+        "rainfall": "Rainfall",
+        "advice": "Perfect weather for field work today!"
+      },
+      "tasks": {
+        "title": "Priority Tasks",
+        "irrigateRice": "Irrigate rice fields",
+        "checkPests": "Check for pest damage",
+        "applyFertilizer": "Apply organic fertilizer",
+        "harvestVegetables": "Harvest vegetables"
+      },
+      "market": {
+        "title": "Market Insights",
+        "priceUp": "Price Up",
+        "priceDown": "Price Down",
+        "stable": "Stable"
+      },
+      "quickActions": {
+        "logActivity": "Log Activity",
+        "askKrishiSakhi": "Ask Krishi Sakhi",
+        "viewKnowledge": "View Knowledge Hub"
+      }
+    },
+    "chat": {
+      "title": "Krishi Sakhi Assistant",
+      "placeholder": "Ask me anything about farming...",
+      "voiceInput": "Voice Input",
+      "send": "Send",
+      "typing": "Krishi Sakhi is typing...",
+      "contextCards": {
+        "weather": "Weather Alert: Rain expected tomorrow",
+        "pest": "Pest Alert: Brown planthopper detected in area",
+        "market": "Market Update: Rice prices increased by 5%"
+      },
+      "quickActions": {
+        "weather": "Weather Forecast",
+        "pest": "Pest Control",
+        "fertilizer": "Fertilizer Guide",
+        "market": "Market Prices"
+      },
+      "starters": {
+        "weather": "What's the weather forecast for this week?",
+        "pest": "How do I control pests in my rice field?",
+        "fertilizer": "When should I apply fertilizer to my crops?",
+        "market": "What are the current market prices for coconut?"
+      }
+    },
+    "knowledge": {
+      "title": "Knowledge Hub",
+      "subtitle": "Comprehensive farming guides and resources",
+      "searchPlaceholder": "Search farming topics...",
+      "filters": {
+        "all": "All Topics",
+        "crops": "Crop Guides",
+        "pests": "Pest Control",
+        "weather": "Weather",
+        "market": "Market Info",
+        "technology": "Technology"
+      },
+      "difficulty": {
+        "beginner": "Beginner",
+        "intermediate": "Intermediate",
+        "advanced": "Advanced"
+      },
+      "trending": "Trending Searches",
+      "featured": "Featured Topics",
+      "bookmark": "Bookmark",
+      "share": "Share",
+      "readTime": "min read"
+    }
+  },
+  "ml": {
+    "common": {
+      "welcome": "സ്വാഗതം",
+      "dashboard": "ഡാഷ്‌ബോർഡ്",
+      "weather": "കാലാവസ്ഥ",
+      "chat": "ചാറ്റ്",
+      "activity": "പ്രവർത്തനം",
+      "knowledge": "അറിവ്",
+      "profile": "പ്രൊഫൈൽ",
+      "notifications": "അറിയിപ്പുകൾ",
+      "crops": "വിളകൾ",
+      "signin": "സൈൻ ഇൻ",
+      "signup": "സൈൻ അപ്പ്",
+      "logout": "ലോഗൗട്ട്",
+      "save": "സേവ്",
+      "cancel": "റദ്ദാക്കുക",
+      "submit": "സമർപ്പിക്കുക",
+      "search": "തിരയുക",
+      "loading": "ലോഡിംഗ്...",
+      "error": "പിശക്",
+      "success": "വിജയം",
+      "today": "ഇന്ന്",
+      "yesterday": "ഇന്നലെ",
+      "tomorrow": "നാളെ",
+      "high": "ഉയർന്ന",
+      "medium": "ഇടത്തരം",
+      "low": "കുറഞ്ഞ",
+      "urgent": "അടിയന്തിരം",
+      "normal": "സാധാരണ"
+    },
+    "landing": {
+      "title": "കൃഷി സഖി",
+      "subtitle": "നിങ്ങളുടെ AI-പവർഡ് കൃഷി സഹായി",
+      "description": "മലയാളത്തിലും ഇംഗ്ലീഷിലും വ്യക്തിഗത കൃഷി ഉപദേശം, കാലാവസ്ഥാ അപ്‌ഡേറ്റുകൾ, വിള പരിപാലന മാർഗ്ഗനിർദ്ദേശങ്ങൾ എന്നിവ നേടുക",
+      "getStarted": "ആരംഭിക്കുക",
+      "learnMore": "കൂടുതൽ അറിയുക",
+      "features": {
+        "weather": {
+          "title": "കാലാവസ്ഥാ വിവരങ്ങൾ",
+          "description": "തത്സമയ കാലാവസ്ഥാ അപ്‌ഡേറ്റുകളും കൃഷി-നിർദ്ദിഷ്ട പ്രവചനങ്ങളും"
+        },
+        "ai": {
+          "title": "AI സഹായി",
+          "description": "നിങ്ങളുടെ കൃഷി ചോദ്യങ്ങൾക്ക് തൽക്ഷണ ഉത്തരങ്ങൾ നേടുക"
+        },
+        "knowledge": {
+          "title": "അറിവിന്റെ കേന്ദ്രം",
+          "description": "സമഗ്ര കൃഷി ഗൈഡുകളും മികച്ച രീതികളും ആക്‌സസ് ചെയ്യുക"
+        },
+        "activity": {
+          "title": "പ്രവർത്തന ട്രാക്കിംഗ്",
+          "description": "നിങ്ങളുടെ കൃഷി പ്രവർത്തനങ്ങൾ ലോഗ് ചെയ്യുകയും നിരീക്ഷിക്കുകയും ചെയ്യുക"
+        }
+      },
+      "testimonials": {
+        "title": "കർഷകർ പറയുന്നത്",
+        "ravi": {
+          "name": "രവി കുമാർ",
+          "location": "തൃശ്ശൂർ, കേരളം",
+          "text": "മികച്ച സമയക്രമവും കീട നിയന്ത്രണ ഉപദേശവും ഉപയോഗിച്ച് കൃഷി സഖി എന്റെ നെൽകൃഷിയുടെ വിളവ് 30% വർദ്ധിപ്പിക്കാൻ സഹായിച്ചു."
+        },
+        "priya": {
+          "name": "പ്രിയ നായർ",
+          "location": "കോട്ടയം, കേരളം",
+          "text": "കാലാവസ്ഥാ മുന്നറിയിപ്പുകൾ അപ്രതീക്ഷിത മഴയിൽ നിന്ന് എന്റെ തെങ്ങിൻ തോട്ടത്തെ രക്ഷിച്ചു. വളരെ വിശ്വസനീയമായ ആപ്പ്!"
+        }
+      },
+      "stats": {
+        "farmers": "10,000+ കർഷകർ",
+        "crops": "50+ വിളകൾ പിന്തുണയ്ക്കുന്നു",
+        "accuracy": "95% കാലാവസ്ഥാ കൃത്യത"
+      }
+    },
+    "auth": {
+      "signin": {
+        "title": "കൃഷി സഖിയിലേക്ക് സൈൻ ഇൻ ചെയ്യുക",
+        "subtitle": "തിരികെ സ്വാഗതം! നിങ്ങളുടെ കൃഷി ഡാഷ്‌ബോർഡ് ആക്‌സസ് ചെയ്യാൻ വിശദാംശങ്ങൾ നൽകുക",
+        "email": "ഇമെയിൽ അല്ലെങ്കിൽ ഫോൺ നമ്പർ",
+        "password": "പാസ്‌വേഡ്",
+        "forgotPassword": "പാസ്‌വേഡ് മറന്നോ?",
+        "noAccount": "അക്കൗണ്ട് ഇല്ലേ?",
+        "signupLink": "ഇവിടെ സൈൻ അപ്പ് ചെയ്യുക"
+      },
+      "signup": {
+        "title": "കൃഷി സഖിയിൽ ചേരുക",
+        "subtitle": "നിങ്ങളുടെ സ്മാർട്ട് കൃഷി യാത്ര ആരംഭിക്കാൻ അക്കൗണ്ട് സൃഷ്ടിക്കുക",
+        "fullName": "പൂർണ്ണ നാമം",
+        "phone": "ഫോൺ നമ്പർ",
+        "email": "ഇമെയിൽ വിലാസം",
+        "password": "പാസ്‌വേഡ്",
+        "confirmPassword": "പാസ്‌വേഡ് സ്ഥിരീകരിക്കുക",
+        "location": "സ്ഥാനം",
+        "detectLocation": "എന്റെ സ്ഥാനം കണ്ടെത്തുക",
+        "landSize": "ഭൂമിയുടെ വലുപ്പം (ഏക്കർ)",
+        "soilType": "മണ്ണിന്റെ തരം",
+        "cropsGrown": "കൃഷി ചെയ്യുന്ന വിളകൾ",
+        "irrigationMethod": "ജലസേചന രീതി",
+        "haveAccount": "ഇതിനകം അക്കൗണ്ട് ഉണ്ടോ?",
+        "signinLink": "ഇവിടെ സൈൻ ഇൻ ചെയ്യുക",
+        "soilTypes": {
+          "alluvial": "കളിമണ്ണ്",
+          "red": "ചുവന്ന മണ്ണ്",
+          "black": "കറുത്ത മണ്ണ്",
+          "laterite": "ലാറ്ററൈറ്റ്",
+          "coastal": "തീരദേശ മണൽ"
+        },
+        "crops": {
+          "rice": "നെൽ",
+          "coconut": "തെങ്ങ്",
+          "rubber": "റബ്ബർ",
+          "spices": "സുഗന്ധവ്യഞ്ജനങ്ങൾ",
+          "vegetables": "പച്ചക്കറികൾ"
+        },
+        "irrigation": {
+          "drip": "ഡ്രിപ്പ് ജലസേചനം",
+          "sprinkler": "സ്പ്രിങ്ക്ലർ",
+          "flood": "വെള്ളപ്പൊക്ക ജലസേചനം",
+          "rainfed": "മഴയെ ആശ്രയിച്ചുള്ള"
+        }
+      }
+    },
+    "dashboard": {
+      "greeting": "സുപ്രഭാതം",
+      "quickStats": {
+        "title": "ദ്രുത സ്ഥിതിവിവരക്കണക്കുകൾ",
+        "activeCrops": "സജീവ വിളകൾ",
+        "landArea": "ഭൂമിയുടെ വിസ്തീർണ്ണം",
+        "todayTasks": "ഇന്നത്തെ ജോലികൾ"
+      },
+      "weather": {
+        "title": "ഇന്നത്തെ കാലാവസ്ഥ",
+        "humidity": "ആർദ്രത",
+        "windSpeed": "കാറ്റിന്റെ വേഗത",
+        "rainfall": "മഴ",
+        "advice": "ഇന്ന് വയലിലെ ജോലികൾക്ക് അനുയോജ്യമായ കാലാവസ്ഥ!"
+      },
+      "tasks": {
+        "title": "മുൻഗണനാ ജോലികൾ",
+        "irrigateRice": "നെൽവയലുകളിൽ വെള്ളം നൽകുക",
+        "checkPests": "കീടങ്ങളുടെ നാശം പരിശോധിക്കുക",
+        "applyFertilizer": "ജൈവ വളം പ്രയോഗിക്കുക",
+        "harvestVegetables": "പച്ചക്കറികൾ വിളവെടുക്കുക"
+      },
+      "market": {
+        "title": "വിപണി വിവരങ്ങൾ",
+        "priceUp": "വില വർദ്ധനവ്",
+        "priceDown": "വില കുറവ്",
+        "stable": "സ്ഥിരം"
+      },
+      "quickActions": {
+        "logActivity": "പ്രവർത്തനം ലോഗ് ചെയ്യുക",
+        "askKrishiSakhi": "കൃഷി സഖിയോട് ചോദിക്കുക",
+        "viewKnowledge": "അറിവിന്റെ കേന്ദ്രം കാണുക"
+      }
+    },
+    "chat": {
+      "title": "കൃഷി സഖി സഹായി",
+      "placeholder": "കൃഷിയെക്കുറിച്ച് എന്തും ചോദിക്കുക...",
+      "voiceInput": "ശബ്ദ ഇൻപുട്ട്",
+      "send": "അയയ്ക്കുക",
+      "typing": "കൃഷി സഖി ടൈപ്പ് ചെയ്യുന്നു...",
+      "contextCards": {
+        "weather": "കാലാവസ്ഥാ മുന്നറിയിപ്പ്: നാളെ മഴ പ്രതീക്ഷിക്കുന്നു",
+        "pest": "കീട മുന്നറിയിപ്പ്: പ്രദേശത്ത് തവിട്ട് ചാടി കണ്ടെത്തി",
+        "market": "വിപണി അപ്‌ഡേറ്റ്: നെല്ലിന്റെ വില 5% വർദ്ധിച്ചു"
+      },
+      "quickActions": {
+        "weather": "കാലാവസ്ഥാ പ്രവചനം",
+        "pest": "കീട നിയന്ത്രണം",
+        "fertilizer": "വള ഗൈഡ്",
+        "market": "വിപണി വിലകൾ"
+      },
+      "starters": {
+        "weather": "ഈ ആഴ്ചയിലെ കാലാവസ്ഥാ പ്രവചനം എന്താണ്?",
+        "pest": "എന്റെ നെൽവയലിലെ കീടങ്ങളെ എങ്ങനെ നിയന്ത്രിക്കാം?",
+        "fertilizer": "എന്റെ വിളകൾക്ക് എപ്പോൾ വളം നൽകണം?",
+        "market": "തെങ്ങിന്റെ നിലവിലെ വിപണി വില എന്താണ്?"
+      }
+    },
+    "knowledge": {
+      "title": "അറിവിന്റെ കേന്ദ്രം",
+      "subtitle": "സമഗ്ര കൃഷി ഗൈഡുകളും വിഭവങ്ങളും",
+      "searchPlaceholder": "കൃഷി വിഷയങ്ങൾ തിരയുക...",
+      "filters": {
+        "all": "എല്ലാ വിഷയങ്ങളും",
+        "crops": "വിള ഗൈഡുകൾ",
+        "pests": "കീട നിയന്ത്രണം",
+        "weather": "കാലാവസ്ഥ",
+        "market": "വിപണി വിവരങ്ങൾ",
+        "technology": "സാങ്കേതികവിദ്യ"
+      },
+      "difficulty": {
+        "beginner": "തുടക്കക്കാരൻ",
+        "intermediate": "ഇടത്തരം",
+        "advanced": "വിപുലമായ"
+      },
+      "trending": "ട്രെൻഡിംഗ് തിരയലുകൾ",
+      "featured": "ഫീച്ചർ ചെയ്ത വിഷയങ്ങൾ",
+      "bookmark": "ബുക്ക്മാർക്ക്",
+      "share": "പങ്കിടുക",
+      "readTime": "മിനിറ്റ് വായന"
+    }
+  }
+}
