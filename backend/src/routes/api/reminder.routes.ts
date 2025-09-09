@@ -1,32 +1,16 @@
-import { Router, Request, Response } from 'express';
-import Reminder from '@/models/reminder.model';
+import { Router } from 'express';
+import { listReminders, getReminderById, createReminder, updateReminder, deleteReminder } from '@/controllers/reminder.controllers';
 
 const router = Router();
 
-router.get('/', async (req: Request, res: Response) => {
-  const reminders = await Reminder.find();
-  res.json(reminders);
-});
+router.get('/', listReminders);
 
-router.get('/:id', async (req: Request, res: Response) => {
-  const reminder = await Reminder.findById(req.params.id);
-  res.json(reminder);
-});
+router.get('/:id', getReminderById);
 
-router.post('/', async (req: Request, res: Response) => {
-  const reminder = new Reminder(req.body);
-  await reminder.save();
-  res.status(201).json(reminder);
-});
+router.post('/', createReminder);
 
-router.put('/:id', async (req: Request, res: Response) => {
-  const reminder = await Reminder.findByIdAndUpdate(req.params.id, req.body, { new: true });
-  res.json(reminder);
-});
+router.put('/:id', updateReminder);
 
-router.delete('/:id', async (req: Request, res: Response) => {
-  await Reminder.findByIdAndDelete(req.params.id);
-  res.status(204).send();
-});
+router.delete('/:id', deleteReminder);
 
 export default router;
