@@ -7,6 +7,7 @@ import {
   MdAccountCircle,
 } from "react-icons/md";
 import Button from "./ui/button";
+import NavUserMenu from "./NavUserMenu";
 import Input from "./ui/input";
 
 export default function NavBar() {
@@ -39,14 +40,7 @@ export default function NavBar() {
             <MdNotificationsNone size={18} />
           </Button>
           <LanguageToggle />
-          <Button
-            variant="outline"
-            aria-label="Profile"
-            title="Profile"
-            className="!px-3"
-          >
-            <MdAccountCircle size={20} />
-          </Button>
+          <NavUserMenu />
         </div>
         <div className="ml-auto md:hidden">
           <LanguageToggle />

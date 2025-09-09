@@ -1,8 +1,6 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import NavBar from './components/NavBar';
-import SideBar from './components/SideBar';
-import MobileNav from './components/MobileNav';
+import AppLayout from './components/AppLayout';
 import Dashboard from './pages/Dashboard';
 import Profile from './pages/Profile';
 import Activity from './pages/Activity';
@@ -12,28 +10,37 @@ import Knowledge from './pages/Knowledge';
 import Chat from './pages/Chat';
 import Settings from './pages/Settings';
 import Prices from './pages/Prices';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
+import ProtectedRoute from './components/ProtectedRoute';
+import GuestRoute from './components/GuestRoute';
 
 export default function App(){
   return (
-    <div className="min-h-screen pb-16 md:pb-0 bg-leaf-50/40">
-      <NavBar />
-      <div className="max-w-7xl mx-auto container-px section-gap grid grid-cols-1 md:grid-cols-[18rem_1fr] gap-6">
-        <div className="hidden md:block"><SideBar /></div>
-        <main className="space-y-6">
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/activity" element={<Activity />} />
-            <Route path="/advisory" element={<Advisory />} />
-            <Route path="/reminders" element={<Reminders />} />
-            <Route path="/knowledge" element={<Knowledge />} />
-            <Route path="/prices" element={<Prices />} />
-            <Route path="/chat" element={<Chat />} />
-            <Route path="/settings" element={<Settings />} />
-          </Routes>
-        </main>
-      </div>
-      <MobileNav />
-    </div>
+    <Routes>
+      <Route element={<GuestRoute />}>
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+      </Route>
+
+      <Route element={<ProtectedRoute />}>
+        <Route
+          path="/"
+          element={
+            <AppLayout>
+              <Dashboard />
+            </AppLayout>
+          }
+        />
+        <Route path="/profile" element={<AppLayout><Profile /></AppLayout>} />
+        <Route path="/activity" element={<AppLayout><Activity /></AppLayout>} />
+        <Route path="/advisory" element={<AppLayout><Advisory /></AppLayout>} />
+        <Route path="/reminders" element={<AppLayout><Reminders /></AppLayout>} />
+        <Route path="/knowledge" element={<AppLayout><Knowledge /></AppLayout>} />
+        <Route path="/prices" element={<AppLayout><Prices /></AppLayout>} />
+        <Route path="/chat" element={<AppLayout><Chat /></AppLayout>} />
+        <Route path="/settings" element={<AppLayout><Settings /></AppLayout>} />
+      </Route>
+    </Routes>
   );
 }
