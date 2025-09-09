@@ -3,6 +3,7 @@
 import type React from "react"
 import { createContext, useContext, useState, useEffect } from "react"
 import translations from "./translations.json"
+import dashboardTranslations from "./dashboard.json"
 
 type Language = "en" | "ml"
 
@@ -33,8 +34,10 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
   // Translation function
   const t = (key: string): string => {
-    const keys = key.split(".")
-    let value: any = translations[language]
+  const keys = key.split(".")
+  // Merge base translations with dashboard-specific translations (dashboard has higher priority)
+  const merged: any = { ...(translations[language] || {}), ...(dashboardTranslations[language] || {}) }
+  let value: any = merged
 
     for (const k of keys) {
       if (value && typeof value === "object" && k in value) {

@@ -11,8 +11,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Leaf, Bell, TrendingUp, Calendar, Droplets, DollarSign, BarChart3, Users, Target } from "lucide-react"
 import Link from "next/link"
+import { useLanguage } from "@/lib/language-context"
 
 export default function DashboardPage() {
+  const { t } = useLanguage()
+
   return (
     <div className="min-h-screen bg-background pb-20 safe-area-inset">
       {/* Header */}
@@ -44,8 +47,8 @@ export default function DashboardPage() {
         <div className="bg-gradient-to-r from-emerald-50 to-green-50 rounded-lg p-4 sm:p-6 border border-emerald-100 animate-fade-in">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
             <div>
-              <h2 className="text-lg sm:text-xl font-semibold text-emerald-800">Welcome back, Ravi!</h2>
-              <p className="text-sm sm:text-base text-emerald-600">Your farm is looking healthy today</p>
+                  <h2 className="text-lg sm:text-xl font-semibold text-emerald-800">{t("dashboard.welcomeBack").replace("{name}", "Ravi")}</h2>
+                  <p className="text-sm sm:text-base text-emerald-600">{t("dashboard.statusHealthy")}</p>
             </div>
             <Badge className="bg-emerald-100 text-emerald-800 border-emerald-200 self-start sm:self-center">
               Day 45 of Season
@@ -54,15 +57,15 @@ export default function DashboardPage() {
           <div className="grid grid-cols-3 gap-3 sm:gap-6">
             <div className="text-center p-2 sm:p-3">
               <div className="text-xl sm:text-2xl font-bold text-emerald-700">2.5</div>
-              <div className="text-xs sm:text-sm text-emerald-600">Acres Active</div>
+                  <div className="text-xs sm:text-sm text-emerald-600">{t("dashboard.stats.acresActive")}</div>
             </div>
             <div className="text-center p-2 sm:p-3">
               <div className="text-xl sm:text-2xl font-bold text-emerald-700">85%</div>
-              <div className="text-xs sm:text-sm text-emerald-600">Crop Health</div>
+                  <div className="text-xs sm:text-sm text-emerald-600">{t("dashboard.stats.cropHealth")}</div>
             </div>
             <div className="text-center p-2 sm:p-3">
               <div className="text-xl sm:text-2xl font-bold text-emerald-700">₹45K</div>
-              <div className="text-xs sm:text-sm text-emerald-600">Est. Revenue</div>
+                  <div className="text-xs sm:text-sm text-emerald-600">{t("dashboard.stats.estRevenue")}</div>
             </div>
           </div>
         </div>
@@ -75,8 +78,8 @@ export default function DashboardPage() {
         <Card className="card-enhanced animate-slide-up">
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
-              <Target className="w-4 h-4 sm:w-5 sm:h-5 text-orange-500" />
-              Today's Priority Tasks
+                  <Target className="w-4 h-4 sm:w-5 sm:h-5 text-orange-500" />
+                  {t("dashboard.tasks.title") || "Today's Priority Tasks"}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
@@ -84,8 +87,8 @@ export default function DashboardPage() {
               <div className="flex items-center gap-3">
                 <Droplets className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500 flex-shrink-0" />
                 <div>
-                  <div className="font-medium text-sm sm:text-base">Irrigation - Field A</div>
-                  <div className="text-xs sm:text-sm text-muted-foreground">Due by 6:00 AM</div>
+                      <div className="font-medium text-sm sm:text-base">Irrigation - Field A</div>
+                      <div className="text-xs sm:text-sm text-muted-foreground">{t("dashboard.tasks.dueBy")}</div>
                 </div>
               </div>
               <Badge variant="outline" className="text-orange-600 border-orange-200 self-start sm:self-center">
@@ -96,8 +99,8 @@ export default function DashboardPage() {
               <div className="flex items-center gap-3">
                 <Calendar className="w-4 h-4 sm:w-5 sm:h-5 text-green-500 flex-shrink-0" />
                 <div>
-                  <div className="font-medium text-sm sm:text-base">Fertilizer Application</div>
-                  <div className="text-xs sm:text-sm text-muted-foreground">Rice Field - Section B</div>
+                      <div className="font-medium text-sm sm:text-base">Fertilizer Application</div>
+                      <div className="text-xs sm:text-sm text-muted-foreground">{t("dashboard.tasks.fertilizerSubtitle")}</div>
                 </div>
               </div>
               <Badge variant="outline" className="text-yellow-600 border-yellow-200 self-start sm:self-center">
@@ -108,8 +111,8 @@ export default function DashboardPage() {
               <div className="flex items-center gap-3">
                 <Users className="w-4 h-4 sm:w-5 sm:h-5 text-purple-500 flex-shrink-0" />
                 <div>
-                  <div className="font-medium text-sm sm:text-base">Labor Coordination</div>
-                  <div className="text-xs sm:text-sm text-muted-foreground">Harvest preparation meeting</div>
+                      <div className="font-medium text-sm sm:text-base">{t("dashboard.tasks.laborCoordination")}</div>
+                      <div className="text-xs sm:text-sm text-muted-foreground">{t("dashboard.tasks.laborSubtitle")}</div>
                 </div>
               </div>
               <Badge variant="outline" className="text-green-600 border-green-200 self-start sm:self-center">
@@ -128,7 +131,7 @@ export default function DashboardPage() {
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
               <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-green-500" />
-              Market Insights
+              {t("dashboard.market.title") || "Market Insights"}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -153,11 +156,11 @@ export default function DashboardPage() {
             <div className="p-3 sm:p-4 bg-amber-50 rounded-lg border border-amber-100">
               <div className="flex items-center gap-2 mb-2">
                 <DollarSign className="w-4 h-4 text-amber-600" />
-                <span className="text-sm sm:text-base font-medium">Best Selling Opportunity</span>
+                    <span className="text-sm sm:text-base font-medium">{t("dashboard.market.bestOpportunityTitle")}</span>
               </div>
-              <p className="text-sm sm:text-base text-amber-700 leading-relaxed">
-                Rice prices expected to rise 8-10% next week due to festival demand. Consider selling 60% of harvest.
-              </p>
+                  <p className="text-sm sm:text-base text-amber-700 leading-relaxed">
+                    {t("dashboard.market.bestOpportunityDesc")}
+                  </p>
             </div>
           </CardContent>
         </Card>
@@ -166,14 +169,14 @@ export default function DashboardPage() {
           <CardHeader className="pb-3">
             <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
               <BarChart3 className="w-4 h-4 sm:w-5 sm:h-5 text-purple-500" />
-              Farm Analytics
+              {t("dashboard.analytics.title") || "Farm Analytics"}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4 sm:space-y-6">
             <div className="grid-responsive-2 gap-4 sm:gap-6">
               <div className="space-y-2 sm:space-y-3">
                 <div className="flex justify-between text-sm sm:text-base">
-                  <span>Water Usage</span>
+                  <span>{t("dashboard.analytics.waterUsage") || "Water Usage"}</span>
                   <span className="font-medium">75%</span>
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2 sm:h-3">
@@ -186,7 +189,8 @@ export default function DashboardPage() {
               </div>
               <div className="space-y-2 sm:space-y-3">
                 <div className="flex justify-between text-sm sm:text-base">
-                  <span>Crop Growth</span>
+                  <span>{t("dashboard.analytics.cropGrowth") || "Crop Growth"}</span>
+                    <div className="text-xs sm:text-sm text-muted-foreground">2,250L used this week</div>
                   <span className="font-medium">85%</span>
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2 sm:h-3">
