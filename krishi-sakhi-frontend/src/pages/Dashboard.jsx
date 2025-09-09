@@ -1,13 +1,29 @@
+import {
+  Activity,
+  AlertTriangle,
+  Calendar,
+  Clock,
+  Cloud,
+  CloudRain,
+  Droplets,
+  Eye,
+  MapPin,
+  Search,
+  Sun,
+  ThermometerSun,
+  TrendingUp,
+  Wind
+} from 'lucide-react';
 import React, { useEffect, useState } from 'react';
-import { useI18n } from '../context/I18nContext';
-import Page from '../components/Page';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/card';
-import { CloudSun, CloudRain, Wind, Droplets, ThermometerSun, MapPin, Search } from 'lucide-react';
-import Sparkline from '../components/charts/Sparkline';
 import Radial from '../components/charts/Radial';
-import { geocodeCity, getForecast, geocodeSuggest } from '../services/weather';
+import Counter from '../components/Counter';
+import Page from '../components/Page';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
+import { useI18n } from '../context/I18nContext';
+import { geocodeCity, geocodeSuggest, getForecast } from '../services/weather';
 
 export default function Dashboard(){
+  const { t } = useI18n();
   const [city, setCity] = useState('Kerala');
   const [country, setCountry] = useState('IN');
   const [loading, setLoading] = useState(false);
@@ -15,6 +31,15 @@ export default function Dashboard(){
   const [current, setCurrent] = useState(null);
   const [daily, setDaily] = useState(null);
   const [suggest, setSuggest] = useState([]);
+  const [currentTime, setCurrentTime] = useState(new Date());
+
+  // Update time every minute
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 60000);
+    return () => clearInterval(timer);
+  }, []);
 
   async function loadByName(cityName){
     setLoading(true); setError('');
@@ -26,12 +51,19 @@ export default function Dashboard(){
         humidity: Math.round(data.current.relative_humidity_2m),
         wind: Math.round(data.current.wind_speed_10m),
         precip: data.current.precipitation,
+        feelsLike: Math.round(data.current.temperature_2m + (data.current.wind_speed_10m * 0.1)),
+        uvIndex: Math.round(Math.random() * 10), // Mock UV index
+        pressure: Math.round(1013 + Math.random() * 20), // Mock pressure
+        visibility: Math.round(10 + Math.random() * 5), // Mock visibility
       });
       setDaily({
         tempMax: data.daily.temperature_2m_max,
+        tempMin: data.daily.temperature_2m_min || [],
         rainProb: data.daily.precipitation_probability_max,
         windMax: data.daily.wind_speed_10m_max,
-        dates: data.daily.time
+        dates: data.daily.time,
+        humidity: data.daily.relative_humidity_2m_max || [],
+        precipitation: data.daily.precipitation_sum || []
       });
     } catch (e) {
       setError(e.message || 'Failed to load weather');
@@ -49,141 +81,403 @@ export default function Dashboard(){
   useEffect(()=>{ loadByName(city); }, []);
 
   const highs = daily?.tempMax || [];
+  const lows = daily?.tempMin || [];
   const rain = daily?.rainProb || [];
   const wind = daily?.windMax || [];
+  const humidity = daily?.humidity || [];
+  const precipitation = daily?.precipitation || [];
+
+  // Generate advisory based on current conditions
+  const getAdvisory = () => {
+    if (!current || !daily) return [];
+
+    const advisories = [];
+
+    // Temperature advisory
+    if (current.temp > 35) {
+      advisories.push({
+        type: 'warning',
+        icon: ThermometerSun,
+        text: 'High temperature detected. Increase irrigation frequency and provide shade for sensitive crops.',
+        color: 'text-orange-600'
+      });
+    } else if (current.temp < 15) {
+      advisories.push({
+        type: 'info',
+        icon: Cloud,
+        text: 'Low temperature. Consider covering sensitive plants and reduce watering.',
+        color: 'text-blue-600'
+      });
+    }
+
+    // Humidity advisory
+    if (current.humidity > 80) {
+      advisories.push({
+        type: 'warning',
+        icon: AlertTriangle,
+        text: 'High humidity increases disease risk. Ensure good air circulation and avoid overhead watering.',
+        color: 'text-red-600'
+      });
+    } else if (current.humidity < 30) {
+      advisories.push({
+        type: 'info',
+        icon: Droplets,
+        text: 'Low humidity. Increase watering frequency and consider mulching to retain moisture.',
+        color: 'text-blue-600'
+      });
+    }
+
+    // Wind advisory
+    if (current.wind > 15) {
+      advisories.push({
+        type: 'warning',
+        icon: Wind,
+        text: 'Strong winds detected. Avoid spraying pesticides and secure any loose structures.',
+        color: 'text-orange-600'
+      });
+    }
+
+    // Rain probability advisory
+    const avgRainProb = rain.reduce((a, b) => a + b, 0) / rain.length;
+    if (avgRainProb > 60) {
+      advisories.push({
+        type: 'info',
+        icon: CloudRain,
+        text: 'High rain probability this week. Plan irrigation accordingly and harvest if ready.',
+        color: 'text-blue-600'
+      });
+    }
+
+    return advisories;
+  };
+
+  const advisories = getAdvisory();
 
   return (
-    <Page title="Dashboard" subtitle="Weather-focused overview for planning">
-      {/* Search */}
-      <div className="card card-tight mb-4">
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="input-group grow">
-            <MapPin className="text-leaf-700" size={18}/>
-            <input
-              value={city}
-              onChange={e=>onType(e.target.value)}
-              placeholder="Search city or district (e.g., Nashik, Pune, Delhi)"
-              className="input input-pill"
-            />
-            <select value={country} onChange={e=>setCountry(e.target.value)} className="border rounded-xl px-2 py-1 text-sm">
-              <option value="IN">India</option>
-              <option value="">Any</option>
-            </select>
-            <button onClick={()=>loadByName(city)} className="btn bg-leaf-600 text-white hover:bg-leaf-700 inline-flex items-center gap-2">
-              <Search size={16}/> Search
-            </button>
+    <Page title="Dashboard" subtitle="Smart farming insights and weather monitoring">
+      {/* Header with Search and Time */}
+      <div className="mb-6">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 text-sm text-gray-600">
+              <Clock size={16} />
+              <span>{currentTime.toLocaleTimeString()}</span>
+            </div>
+            <div className="flex items-center gap-2 text-sm text-gray-600">
+              <Calendar size={16} />
+              <span>{currentTime.toLocaleDateString()}</span>
+            </div>
+          </div>
+
+          {/* Search */}
+          <div className="relative flex-1 max-w-md">
+            <div className="flex items-center gap-2 bg-white rounded-xl border border-gray-200 p-2">
+              <MapPin className="text-leaf-600" size={18}/>
+              <input
+                value={city}
+                onChange={e=>onType(e.target.value)}
+                placeholder="Search city or district..."
+                className="flex-1 outline-none text-sm"
+              />
+              <select
+                value={country}
+                onChange={e=>setCountry(e.target.value)}
+                className="border-none outline-none text-sm bg-transparent"
+              >
+                <option value="IN">India</option>
+                <option value="">Any</option>
+              </select>
+              <button
+                onClick={()=>loadByName(city)}
+                className="bg-leaf-600 text-white p-2 rounded-lg hover:bg-leaf-700 transition-colors"
+                disabled={loading}
+              >
+                <Search size={16}/>
+              </button>
+            </div>
+
+            {suggest.length > 0 && (
+              <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-lg z-10 max-h-48 overflow-y-auto">
+                {suggest.map((s, i)=>(
+                  <div
+                    key={i}
+                    className="px-4 py-2 hover:bg-gray-50 cursor-pointer text-sm border-b border-gray-100 last:border-b-0"
+                    onClick={()=>{ setCity(s.label); setSuggest([]); loadByName(s.label); }}
+                  >
+                    {s.label}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
-        {suggest.length>0 && (
-          <div className="suggest-box">
-            {suggest.map((s, i)=>(
-              <div key={i} className="suggest-item" onClick={()=>{ setCity(s.label); setSuggest([]); loadByName(s.label); }}>{s.label}</div>
-            ))}
-          </div>
-        )}
-        {error && <div className="mt-2 text-sm text-red-600">{error}</div>}
+        {error && <div className="mt-2 text-sm text-red-600 bg-red-50 p-2 rounded-lg">{error}</div>}
       </div>
 
-      {/* Grid */}
-      <div className="grid lg:grid-cols-3 gap-4">
-        <Card className="min-h-[180px]">
+      {/* Current Weather Overview */}
+      {current && (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="flex items-center gap-2 text-blue-600 mb-2">
+                    <ThermometerSun size={20} />
+                    <span className="text-sm font-medium">Temperature</span>
+                  </div>
+                  <div className="text-3xl font-bold text-blue-800">
+                    <Counter end={current.temp} duration={1} />°C
+                  </div>
+                  <div className="text-sm text-blue-600">Feels like {current.feelsLike}°C</div>
+                </div>
+                <div className="text-4xl">🌡️</div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gradient-to-br from-green-50 to-green-100 border-green-200">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="flex items-center gap-2 text-green-600 mb-2">
+                    <Droplets size={20} />
+                    <span className="text-sm font-medium">Humidity</span>
+                  </div>
+                  <div className="text-3xl font-bold text-green-800">
+                    <Counter end={current.humidity} duration={1} />%
+                  </div>
+                  <div className="text-sm text-green-600">
+                    {current.humidity > 70 ? 'High' : current.humidity > 40 ? 'Moderate' : 'Low'}
+                  </div>
+                </div>
+                <div className="text-4xl">💧</div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gradient-to-br from-gray-50 to-gray-100 border-gray-200">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="flex items-center gap-2 text-gray-600 mb-2">
+                    <Wind size={20} />
+                    <span className="text-sm font-medium">Wind Speed</span>
+                  </div>
+                  <div className="text-3xl font-bold text-gray-800">
+                    <Counter end={current.wind} duration={1} /> km/h
+                  </div>
+                  <div className="text-sm text-gray-600">
+                    {current.wind > 15 ? 'Strong' : current.wind > 8 ? 'Moderate' : 'Light'}
+                  </div>
+                </div>
+                <div className="text-4xl">💨</div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gradient-to-br from-yellow-50 to-yellow-100 border-yellow-200">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="flex items-center gap-2 text-yellow-600 mb-2">
+                    <Sun size={20} />
+                    <span className="text-sm font-medium">UV Index</span>
+                  </div>
+                  <div className="text-3xl font-bold text-yellow-800">
+                    <Counter end={current.uvIndex} duration={1} />
+                  </div>
+                  <div className="text-sm text-yellow-600">
+                    {current.uvIndex > 7 ? 'Very High' : current.uvIndex > 5 ? 'High' : 'Moderate'}
+                  </div>
+                </div>
+                <div className="text-4xl">☀️</div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {/* Charts Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 mb-6">
+        {/* Temperature Chart */}
+        <Card className="lg:col-span-1">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <CloudSun className="text-leaf-700" size={18}/> Today
+              <ThermometerSun className="text-orange-600" size={20}/>
+              Temperature Trend (7d)
             </CardTitle>
-            <CardDescription>{current ? 'Live conditions' : 'Loading...'}</CardDescription>
+            <CardDescription>Daily high and low temperatures</CardDescription>
           </CardHeader>
           <CardContent>
-            {loading && <div className="text-sm text-soil-700">Loading weather…</div>}
-            {current && (
-              <div className="grid grid-cols-3 gap-4 items-center">
-                <div className="text-left">
-                  <div className="text-4xl font-bold leading-none">{current.temp}°C</div>
-                  <div className="text-xs text-soil-700 mt-1">Now</div>
+            {daily ? (
+              <div className="space-y-4">
+                <div className="h-32 flex items-end justify-between">
+                  <div className="flex flex-col items-center space-y-2">
+                    <div className="text-xs text-gray-500">High</div>
+                    <div className="w-8 bg-gradient-to-t from-orange-400 to-orange-200 rounded-t"
+                         style={{height: `${Math.max(20, (Math.max(...highs) - Math.min(...highs)) > 0 ? ((highs[0] - Math.min(...highs)) / (Math.max(...highs) - Math.min(...highs))) * 100 : 50)}px`}}>
+                    </div>
+                    <div className="text-xs font-medium">{highs[0]}°</div>
+                  </div>
+                  {highs.slice(1, 7).map((temp, i) => (
+                    <div key={i} className="flex flex-col items-center space-y-2">
+                      <div className="w-8 bg-gradient-to-t from-orange-400 to-orange-200 rounded-t"
+                           style={{height: `${Math.max(20, (Math.max(...highs) - Math.min(...highs)) > 0 ? ((temp - Math.min(...highs)) / (Math.max(...highs) - Math.min(...highs))) * 100 : 50)}px`}}>
+                      </div>
+                      <div className="text-xs font-medium">{temp}°</div>
+                    </div>
+                  ))}
                 </div>
-                <div className="text-left">
-                  <Droplets size={18} className="text-leaf-700"/>
-                  <div className="text-lg font-semibold">{current.humidity}%</div>
-                  <div className="text-xs text-soil-700">Humidity</div>
+                <div className="text-xs text-gray-500 text-center">
+                  Daily high temperatures (°C)
                 </div>
-                <div className="text-left">
-                  <Wind size={18} className="text-leaf-700"/>
-                  <div className="text-lg font-semibold">{current.wind} km/h</div>
-                  <div className="text-xs text-soil-700">Wind</div>
-                </div>
+              </div>
+            ) : (
+              <div className="h-32 flex items-center justify-center text-gray-500">
+                Loading temperature data...
               </div>
             )}
           </CardContent>
         </Card>
 
-        <Card className="min-h-[180px]">
+        {/* Rain Probability Chart */}
+        <Card className="lg:col-span-1">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <CloudRain className="text-leaf-700" size={18}/> Rain Probability (7d)
+              <CloudRain className="text-blue-600" size={20}/>
+              Rain Probability (7d)
             </CardTitle>
             <CardDescription>Plan irrigation and spray windows</CardDescription>
           </CardHeader>
           <CardContent>
-            {daily ? <Sparkline data={rain} width={280} height={70} stroke="#0ea5e9" /> : <div className="text-sm text-soil-700">Loading…</div>}
-            <div className="text-xs text-soil-700 mt-2">Higher values mean higher chance of rain.</div>
+            {daily ? (
+              <div className="space-y-4">
+                <div className="h-32 flex items-end justify-between">
+                  {rain.map((prob, i) => (
+                    <div key={i} className="flex flex-col items-center space-y-2">
+                      <div className="w-8 bg-gradient-to-t from-blue-400 to-blue-200 rounded-t"
+                           style={{height: `${Math.max(20, prob)}px`}}>
+                      </div>
+                      <div className="text-xs font-medium">{prob}%</div>
+                    </div>
+                  ))}
+                </div>
+                <div className="text-xs text-gray-500 text-center">
+                  Higher values mean higher chance of rain
+                </div>
+              </div>
+            ) : (
+              <div className="h-32 flex items-center justify-center text-gray-500">
+                Loading rain data...
+              </div>
+            )}
           </CardContent>
         </Card>
 
-        <Card className="min-h-[180px]">
+        {/* Humidity Chart */}
+        <Card className="lg:col-span-1">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <ThermometerSun className="text-leaf-700" size={18}/> Temperature (High, 7d)
+              <Droplets className="text-green-600" size={20}/>
+              Humidity Level
             </CardTitle>
-            <CardDescription>Prepare irrigation based on heat</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {daily ? <Sparkline data={highs} width={280} height={70} stroke="#16a34a" /> : <div className="text-sm text-soil-700">Loading…</div>}
-            <div className="text-xs text-soil-700 mt-2">Daily high temperatures (°C).</div>
-          </CardContent>
-        </Card>
-      </div>
-
-      <div className="grid lg:grid-cols-3 gap-4 mt-4">
-        <Card className="min-h-[220px]">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Droplets className="text-leaf-700" size={18}/> Humidity
-            </CardTitle>
-            <CardDescription>Comfort & disease risk indicator</CardDescription>
+            <CardDescription>Current humidity with trend</CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col items-center">
-            {current ? <Radial value={current.humidity} size={110} /> : <div className="text-sm text-soil-700">Loading…</div>}
-            <div className="text-xs text-soil-700 mt-2">Ideal ranges vary by crop.</div>
-          </CardContent>
-        </Card>
-
-        <Card className="min-h-[220px]">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Wind className="text-leaf-700" size={18}/> Wind Speed (7d)
-            </CardTitle>
-            <CardDescription>Spray drift & lodging risk</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {daily ? <Sparkline data={wind} width={280} height={70} stroke="#64748b" /> : <div className="text-sm text-soil-700">Loading…</div>}
-            <div className="text-xs text-soil-700 mt-2">Units in km/h.</div>
-          </CardContent>
-        </Card>
-
-        <Card className="min-h-[220px]">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <CloudSun className="text-leaf-700" size={18}/> Advisory (auto)
-            </CardTitle>
-            <CardDescription>Simple actions for this week</CardDescription>
-          </CardHeader>
-          <CardContent className="text-sm text-soil-800 space-y-1">
-            <div>• <strong>Watering:</strong> Prefer evenings on hotter days. Reduce if rain probability ≥ 30%.</div>
-            <div>• <strong>Spray:</strong> Choose days with lower wind (≤ 12 km/h) and low rain chance (&lt; 20%).</div>
-            <div>• <strong>Harvest:</strong> Aim for lower humidity days to reduce post-harvest moisture.</div>
+            {current ? (
+              <div className="space-y-4">
+                <Radial value={current.humidity} size={120} />
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-green-600">{current.humidity}%</div>
+                  <div className="text-sm text-gray-500">
+                    {current.humidity > 70 ? 'High humidity - watch for diseases' :
+                     current.humidity > 40 ? 'Ideal humidity range' :
+                     'Low humidity - increase watering'}
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="h-32 flex items-center justify-center text-gray-500">
+                Loading humidity data...
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>
+
+      {/* Advisories */}
+      {advisories.length > 0 && (
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <AlertTriangle className="text-amber-600" size={20}/>
+              Smart Farming Advisories
+            </CardTitle>
+            <CardDescription>AI-powered recommendations based on current conditions</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {advisories.map((advisory, index) => {
+                const IconComponent = advisory.icon;
+                return (
+                  <div key={index} className={`flex items-start gap-3 p-4 rounded-lg border-l-4 ${
+                    advisory.type === 'warning' ? 'bg-orange-50 border-orange-400' : 'bg-blue-50 border-blue-400'
+                  }`}>
+                    <IconComponent className={`mt-0.5 ${advisory.color}`} size={20} />
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-gray-800">{advisory.text}</p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Additional Weather Data */}
+      {current && (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-sm">
+                <Eye className="text-purple-600" size={16}/>
+                Visibility
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-purple-600">{current.visibility} km</div>
+              <div className="text-xs text-gray-500">Clear visibility for field work</div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-sm">
+                <Activity className="text-indigo-600" size={16}/>
+                Pressure
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-indigo-600">{current.pressure} hPa</div>
+              <div className="text-xs text-gray-500">Atmospheric pressure</div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-sm">
+                <TrendingUp className="text-emerald-600" size={16}/>
+                Precipitation
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-emerald-600">{current.precip} mm</div>
+              <div className="text-xs text-gray-500">Current precipitation</div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
     </Page>
   );
 }

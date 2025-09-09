@@ -22,7 +22,7 @@ const linkClass = ({ isActive }) =>
 export default function SideBar() {
   const { t } = useI18n();
   return (
-    <aside className="w-72 p-4 space-y-2">
+    <aside className="p-6 space-y-3">
       <NavLink to="/dashboard" className={linkClass}>
         <MdDashboard /> <span>{t["nav.dashboard"]}</span>
       </NavLink>

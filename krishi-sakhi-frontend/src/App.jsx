@@ -2,7 +2,9 @@ import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import AppLayout from './components/AppLayout';
 import GuestRoute from './components/GuestRoute';
+import Preloader from './components/Preloader';
 import ProtectedRoute from './components/ProtectedRoute';
+import { usePreloader } from './context/PreloaderContext';
 import Activity from './pages/Activity';
 import Advisory from './pages/Advisory';
 import Chat from './pages/Chat';
@@ -17,7 +19,13 @@ import Settings from './pages/Settings';
 import Signup from './pages/Signup';
 import Landing from './pages/landing';
 
-export default function App(){
+function AppContent() {
+  const { isLoading, hidePreloader } = usePreloader();
+
+  if (isLoading) {
+    return <Preloader onComplete={hidePreloader} />;
+  }
+
   return (
     <Routes>
       {/* Public Landing Page */}
@@ -51,5 +59,11 @@ export default function App(){
         <Route path="/settings" element={<AppLayout><Settings /></AppLayout>} />
       </Route>
     </Routes>
+  );
+}
+
+export default function App(){
+  return (
+    <AppContent />
   );
 }
