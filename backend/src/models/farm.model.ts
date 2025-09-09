@@ -21,6 +21,7 @@ const FarmSchema: Schema = new Schema<IFarm>(
     irrigation: { type: String, required: true },
     location: { type: String, required: true },
     crops: { type: [String], required: true },
+    activities: [{ type: Schema.Types.ObjectId, ref: 'Activity' }],
   },
   { timestamps: { createdAt: true, updatedAt: false } }
 );
