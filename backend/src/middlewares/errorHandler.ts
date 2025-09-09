@@ -10,8 +10,9 @@ export const notFound = (req: Request, res: Response, next: NextFunction) => {
 // General Error Handler middleware
 export const errorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
   const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
+  console.error('🔥 Error:', err.stack || err);
   res.status(statusCode).json({
-    message: err.message,
+    message: err.message || 'Internal Server Error',
     stack: process.env.NODE_ENV === 'production' ? null : err.stack,
   });
 };
