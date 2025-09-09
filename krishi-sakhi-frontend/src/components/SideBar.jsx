@@ -1,15 +1,16 @@
+import { Leaf } from 'lucide-react';
 import React from "react";
 import {
-  MdAlarm,
-  MdChatBubble,
-  MdDashboard,
-  MdEventNote,
-  MdMenuBook,
-  MdPerson,
-  MdPriceChange,
-  MdTipsAndUpdates,
+    MdAlarm,
+    MdChatBubble,
+    MdDashboard,
+    MdEventNote,
+    MdMenuBook,
+    MdPerson,
+    MdPriceChange,
+    MdStore,
+    MdTipsAndUpdates,
 } from "react-icons/md";
-import { Leaf } from 'lucide-react';
 import { Link, NavLink } from "react-router-dom";
 import { useI18n } from "../context/I18nContext";
 
@@ -33,7 +34,7 @@ export default function SideBar() {
           <Link to="/" className="font-semibold text-lg hover:text-leaf-700">{t["app.title"]}</Link>
         </div>
       </div>
-      
+
       {/* Navigation Links */}
       <div className="p-6 pt-4 space-y-3">
         <NavLink to="/dashboard" className={linkClass}>
@@ -59,6 +60,9 @@ export default function SideBar() {
       </NavLink>
       <NavLink to="/prices" className={linkClass}>
         <MdPriceChange /> <span>{t["nav.prices"]}</span>
+      </NavLink>
+      <NavLink to="/marketplace" className={linkClass}>
+        <MdStore /> <span>{t["nav.marketplace"]}</span>
       </NavLink>
       <NavLink to="/chat" className={linkClass}>
         <MdChatBubble /> <span>{t["nav.chat"]}</span>

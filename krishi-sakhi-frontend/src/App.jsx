@@ -11,6 +11,7 @@ import Chat from './pages/Chat';
 import Dashboard from './pages/Dashboard';
 import Knowledge from './pages/Knowledge';
 import Login from './pages/Login';
+import NearbyMarketPlace from './pages/NearbyMarketPlace';
 import Prices from './pages/Prices';
 import Profile from './pages/Profile';
 import Reminders from './pages/Reminders';
@@ -55,6 +56,7 @@ function AppContent() {
         <Route path="/knowledge" element={<AppLayout><Knowledge /></AppLayout>} />
         <Route path="/schemes" element={<AppLayout><Schemes /></AppLayout>} />
         <Route path="/prices" element={<AppLayout><Prices /></AppLayout>} />
+        <Route path="/marketplace" element={<AppLayout><NearbyMarketPlace /></AppLayout>} />
         <Route path="/chat" element={<AppLayout><Chat /></AppLayout>} />
         <Route path="/settings" element={<AppLayout><Settings /></AppLayout>} />
       </Route>

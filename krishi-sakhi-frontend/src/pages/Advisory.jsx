@@ -29,36 +29,36 @@ export default function Advisory(){
   const advisories = [
     {
       id: 1,
-      title: "High Temperature Alert",
-      description: "Temperatures are expected to reach 38°C today. Increase irrigation frequency and provide shade for sensitive crops.",
+      title: t["advisory.highTempAlert"],
+      description: t["advisory.highTempDescription"],
       severity: "warning",
       category: "weather",
       icon: Sun,
       time: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 hours ago
       priority: "high",
-      action: "Water crops in early morning and evening. Use shade nets if available."
+      action: t["advisory.highTempAction"]
     },
     {
       id: 2,
-      title: "Rain Probability High",
-      description: "70% chance of rain in the next 3 days. Plan irrigation accordingly and harvest if ready.",
+      title: t["advisory.rainProbabilityHigh"],
+      description: t["advisory.rainProbabilityDescription"],
       severity: "info",
       category: "weather",
       icon: Droplets,
       time: new Date(Date.now() - 4 * 60 * 60 * 1000), // 4 hours ago
       priority: "medium",
-      action: "Reduce irrigation and prepare for potential flooding in low areas."
+      action: t["advisory.rainProbabilityAction"]
     },
     {
       id: 3,
-      title: "Pest Alert - Aphids Detected",
-      description: "Aphid infestation detected in your rice field. Immediate treatment recommended.",
+      title: t["advisory.pestAlert"],
+      description: t["advisory.pestDescription"],
       severity: "error",
       category: "pests",
       icon: Bug,
       time: new Date(Date.now() - 6 * 60 * 60 * 1000), // 6 hours ago
       priority: "high",
-      action: "Apply neem oil spray or contact your local agricultural extension officer."
+      action: t["advisory.pestAction"]
     },
     {
       id: 4,

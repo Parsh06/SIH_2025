@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 import Page from '../components/Page';
 import Button from '../components/ui/button';
 import Input from '../components/ui/input';
-import { useI18n } from '../context/I18nContext';
 import { useApp } from '../context/AppStore';
+import { useI18n } from '../context/I18nContext';
 
 export default function Reminders(){
   const { t } = useI18n();
@@ -23,9 +23,9 @@ export default function Reminders(){
   return (
     <Page title={t["reminders.title"]}>
       <div className="grid md:grid-cols-3 gap-2">
-        <Input placeholder="Reminder text" value={text} onChange={e=>setText(e.target.value)} />
+        <Input placeholder={t["reminders.placeholder"]} value={text} onChange={e=>setText(e.target.value)} />
         <Input type="date" value={date} onChange={e=>setDate(e.target.value)} />
-        <Button onClick={add}>{t["action.add"]}</Button>
+        <Button onClick={add}>{t["reminders.addReminder"]}</Button>
       </div>
       <ul className="mt-4 space-y-2">
         {state.reminders.map(r => (
