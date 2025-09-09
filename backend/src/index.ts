@@ -2,6 +2,7 @@ import express, { Application, Request, Response } from 'express';
 import dotenv from 'dotenv';
 import connectDB from '@/config/db';
 import { errorHandler, notFound } from '@/middlewares/errorHandler';
+import apiRoutes from "@/routes/api.routes"
 
 dotenv.config();
 
@@ -18,6 +19,9 @@ app.use(express.json());
 app.get('/', (req: Request, res: Response) => {
   res.send('API is running...');
 });
+
+// API
+app.use('/api', apiRoutes);
 
 // 404 Not Found Middleware
 app.use(notFound);
