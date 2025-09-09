@@ -2,6 +2,7 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import NavBar from './components/NavBar';
 import SideBar from './components/SideBar';
+import MobileNav from './components/MobileNav';
 import Dashboard from './pages/Dashboard';
 import Profile from './pages/Profile';
 import Activity from './pages/Activity';
@@ -14,11 +15,11 @@ import Prices from './pages/Prices';
 
 export default function App(){
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen pb-16 md:pb-0 bg-leaf-50/40">
       <NavBar />
-      <div className="max-w-7xl mx-auto px-4 py-6 grid grid-cols-1 md:grid-cols-[18rem_1fr] gap-6">
-        <SideBar />
-        <main>
+      <div className="max-w-7xl mx-auto container-px section-gap grid grid-cols-1 md:grid-cols-[18rem_1fr] gap-6">
+        <div className="hidden md:block"><SideBar /></div>
+        <main className="space-y-6">
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/profile" element={<Profile />} />
@@ -32,6 +33,7 @@ export default function App(){
           </Routes>
         </main>
       </div>
+      <MobileNav />
     </div>
   );
 }
