@@ -5,6 +5,7 @@ import {
   createFarmer,
   updateFarmer,
   deleteFarmer,
+  getFarmerFullDetails
 } from '@/controllers/farmer.controller';
 import { validateRequest } from '@/middlewares/validateRequest';
 
@@ -15,5 +16,6 @@ router.get('/:id', getFarmerById);
 router.post('/', validateRequest(['name', 'phoneNumber', 'location']), createFarmer);
 router.put('/:id', validateRequest(['name', 'phoneNumber', 'location']), updateFarmer);
 router.delete('/:id', deleteFarmer);
+router.get('/:id/full', getFarmerFullDetails);
 
 export default router;

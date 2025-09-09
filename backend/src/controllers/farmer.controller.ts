@@ -1,5 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import Farmer from '@/models/farmer.model';
+import Farm from '@/models/farm.model';
+import Reminder from '@/models/reminder.model';
 
 export const getAllFarmers = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -49,3 +51,30 @@ export const deleteFarmer = async (req: Request, res: Response, next: NextFuncti
     next(error);
   }
 };
+
+export const getFarmerFullDetails = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const farmerId = req.params.id;
+
+    const farmer = await Farmer.findById(farmerId);
+    if (!farmer) {
+      return res.status(404).json({ message: 'Farmer not found' });
+    }
+
+    const farms = await Farm.find({ farmer: farmerId })
+      .populate('activities');
+
+    const reminders = await Reminder.find({ farmer: farmerId });
+
+    const result = {
+      farmer,
+      farms,
+      reminders,
+    };
+
+    res.json(result);
+  } catch (error) {
+    next(error);
+  }
+};
+
