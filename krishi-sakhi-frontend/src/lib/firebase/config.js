@@ -1,5 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, setPersistence, browserLocalPersistence } from 'firebase/auth';
+import { GoogleAuthProvider } from 'firebase/auth';
 
 // Reads configuration from Vite env variables. Make sure to prefix with VITE_
 const firebaseConfig = {
@@ -14,6 +15,12 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 export const auth = getAuth(app);
+
+// Initialize Google Auth Provider
+export const googleProvider = new GoogleAuthProvider();
+googleProvider.setCustomParameters({
+  prompt: 'select_account'
+});
 
 // Ensure the session persists across tabs and reloads for great UX
 setPersistence(auth, browserLocalPersistence).catch(() => {
