@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Page from '../components/Page';
 import Switch from '../components/ui/switch';
