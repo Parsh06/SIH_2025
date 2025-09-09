@@ -66,7 +66,7 @@ export default function Dashboard(){
         precipitation: data.daily.precipitation_sum || []
       });
     } catch (e) {
-      setError(e.message || 'Failed to load weather');
+      setError(e.message || t['dashboard.failedToLoad']);
     } finally {
       setLoading(false);
     }
@@ -98,14 +98,14 @@ export default function Dashboard(){
       advisories.push({
         type: 'warning',
         icon: ThermometerSun,
-        text: 'High temperature detected. Increase irrigation frequency and provide shade for sensitive crops.',
+        text: t['dashboard.highTempAlert'],
         color: 'text-orange-600'
       });
     } else if (current.temp < 15) {
       advisories.push({
         type: 'info',
         icon: Cloud,
-        text: 'Low temperature. Consider covering sensitive plants and reduce watering.',
+        text: t['dashboard.lowTempAlert'],
         color: 'text-blue-600'
       });
     }
@@ -115,14 +115,14 @@ export default function Dashboard(){
       advisories.push({
         type: 'warning',
         icon: AlertTriangle,
-        text: 'High humidity increases disease risk. Ensure good air circulation and avoid overhead watering.',
+        text: t['dashboard.highHumidityAlert'],
         color: 'text-red-600'
       });
     } else if (current.humidity < 30) {
       advisories.push({
         type: 'info',
         icon: Droplets,
-        text: 'Low humidity. Increase watering frequency and consider mulching to retain moisture.',
+        text: t['dashboard.lowHumidityAlert'],
         color: 'text-blue-600'
       });
     }
@@ -132,7 +132,7 @@ export default function Dashboard(){
       advisories.push({
         type: 'warning',
         icon: Wind,
-        text: 'Strong winds detected. Avoid spraying pesticides and secure any loose structures.',
+        text: t['dashboard.strongWindsAlert'],
         color: 'text-orange-600'
       });
     }
@@ -143,7 +143,7 @@ export default function Dashboard(){
       advisories.push({
         type: 'info',
         icon: CloudRain,
-        text: 'High rain probability this week. Plan irrigation accordingly and harvest if ready.',
+        text: t['dashboard.highRainAlert'],
         color: 'text-blue-600'
       });
     }
@@ -154,7 +154,7 @@ export default function Dashboard(){
   const advisories = getAdvisory();
 
   return (
-    <Page title="Dashboard" subtitle="Smart farming insights and weather monitoring">
+    <Page title={t['dashboard.title']} subtitle={t['dashboard.subtitle']}>
       {/* Header with Search and Time */}
       <div className="mb-6">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
@@ -176,7 +176,7 @@ export default function Dashboard(){
               <input
                 value={city}
                 onChange={e=>onType(e.target.value)}
-                placeholder="Search city or district..."
+                placeholder={t['dashboard.searchPlaceholder']}
                 className="flex-1 outline-none text-sm"
               />
               <select
@@ -184,8 +184,8 @@ export default function Dashboard(){
                 onChange={e=>setCountry(e.target.value)}
                 className="border-none outline-none text-sm bg-transparent"
               >
-                <option value="IN">India</option>
-                <option value="">Any</option>
+                <option value="IN">{t['dashboard.india']}</option>
+                <option value="">{t['dashboard.any']}</option>
               </select>
               <button
                 onClick={()=>loadByName(city)}
@@ -223,12 +223,12 @@ export default function Dashboard(){
                 <div>
                   <div className="flex items-center gap-2 text-blue-600 mb-2">
                     <ThermometerSun size={20} />
-                    <span className="text-sm font-medium">Temperature</span>
+                    <span className="text-sm font-medium">{t['dashboard.temperature']}</span>
                   </div>
                   <div className="text-3xl font-bold text-blue-800">
                     <Counter end={current.temp} duration={1} />°C
                   </div>
-                  <div className="text-sm text-blue-600">Feels like {current.feelsLike}°C</div>
+                  <div className="text-sm text-blue-600">{t['dashboard.feelsLike']} {current.feelsLike}°C</div>
                 </div>
                 <div className="text-4xl">🌡️</div>
               </div>
@@ -241,13 +241,13 @@ export default function Dashboard(){
                 <div>
                   <div className="flex items-center gap-2 text-green-600 mb-2">
                     <Droplets size={20} />
-                    <span className="text-sm font-medium">Humidity</span>
+                    <span className="text-sm font-medium">{t['dashboard.humidity']}</span>
                   </div>
                   <div className="text-3xl font-bold text-green-800">
                     <Counter end={current.humidity} duration={1} />%
                   </div>
                   <div className="text-sm text-green-600">
-                    {current.humidity > 70 ? 'High' : current.humidity > 40 ? 'Moderate' : 'Low'}
+                    {current.humidity > 70 ? t['dashboard.high'] : current.humidity > 40 ? t['dashboard.moderate'] : t['dashboard.low']}
                   </div>
                 </div>
                 <div className="text-4xl">💧</div>
@@ -261,13 +261,13 @@ export default function Dashboard(){
                 <div>
                   <div className="flex items-center gap-2 text-gray-600 mb-2">
                     <Wind size={20} />
-                    <span className="text-sm font-medium">Wind Speed</span>
+                    <span className="text-sm font-medium">{t['dashboard.windSpeed']}</span>
                   </div>
                   <div className="text-3xl font-bold text-gray-800">
                     <Counter end={current.wind} duration={1} /> km/h
                   </div>
                   <div className="text-sm text-gray-600">
-                    {current.wind > 15 ? 'Strong' : current.wind > 8 ? 'Moderate' : 'Light'}
+                    {current.wind > 15 ? t['dashboard.strong'] : current.wind > 8 ? t['dashboard.moderate'] : t['dashboard.light']}
                   </div>
                 </div>
                 <div className="text-4xl">💨</div>
@@ -281,13 +281,13 @@ export default function Dashboard(){
                 <div>
                   <div className="flex items-center gap-2 text-yellow-600 mb-2">
                     <Sun size={20} />
-                    <span className="text-sm font-medium">UV Index</span>
+                    <span className="text-sm font-medium">{t['dashboard.uvIndex']}</span>
                   </div>
                   <div className="text-3xl font-bold text-yellow-800">
                     <Counter end={current.uvIndex} duration={1} />
                   </div>
                   <div className="text-sm text-yellow-600">
-                    {current.uvIndex > 7 ? 'Very High' : current.uvIndex > 5 ? 'High' : 'Moderate'}
+                    {current.uvIndex > 7 ? t['dashboard.veryHigh'] : current.uvIndex > 5 ? t['dashboard.high'] : t['dashboard.moderate']}
                   </div>
                 </div>
                 <div className="text-4xl">☀️</div>
@@ -304,16 +304,16 @@ export default function Dashboard(){
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <ThermometerSun className="text-orange-600" size={20}/>
-              Temperature Trend (7d)
+              {t['dashboard.temperatureTrend']}
             </CardTitle>
-            <CardDescription>Daily high and low temperatures</CardDescription>
+            <CardDescription>{t['dashboard.dailyHighLow']}</CardDescription>
           </CardHeader>
           <CardContent>
             {daily ? (
               <div className="space-y-4">
                 <div className="h-32 flex items-end justify-between">
                   <div className="flex flex-col items-center space-y-2">
-                    <div className="text-xs text-gray-500">High</div>
+                    <div className="text-xs text-gray-500">{t['dashboard.high']}</div>
                     <div className="w-8 bg-gradient-to-t from-orange-400 to-orange-200 rounded-t"
                          style={{height: `${Math.max(20, (Math.max(...highs) - Math.min(...highs)) > 0 ? ((highs[0] - Math.min(...highs)) / (Math.max(...highs) - Math.min(...highs))) * 100 : 50)}px`}}>
                     </div>
@@ -329,12 +329,12 @@ export default function Dashboard(){
                   ))}
                 </div>
                 <div className="text-xs text-gray-500 text-center">
-                  Daily high temperatures (°C)
+                  {t['dashboard.dailyHighTemperatures']}
                 </div>
               </div>
             ) : (
               <div className="h-32 flex items-center justify-center text-gray-500">
-                Loading temperature data...
+                {t['dashboard.loadingTemperature']}
               </div>
             )}
           </CardContent>
@@ -345,9 +345,9 @@ export default function Dashboard(){
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <CloudRain className="text-blue-600" size={20}/>
-              Rain Probability (7d)
+              {t['dashboard.rainProbability']}
             </CardTitle>
-            <CardDescription>Plan irrigation and spray windows</CardDescription>
+            <CardDescription>{t['dashboard.planIrrigation']}</CardDescription>
           </CardHeader>
           <CardContent>
             {daily ? (
@@ -363,12 +363,12 @@ export default function Dashboard(){
                   ))}
                 </div>
                 <div className="text-xs text-gray-500 text-center">
-                  Higher values mean higher chance of rain
+                  {t['dashboard.higherValuesMean']}
                 </div>
               </div>
             ) : (
               <div className="h-32 flex items-center justify-center text-gray-500">
-                Loading rain data...
+                {t['dashboard.loadingRain']}
               </div>
             )}
           </CardContent>
@@ -379,9 +379,9 @@ export default function Dashboard(){
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Droplets className="text-green-600" size={20}/>
-              Humidity Level
+              {t['dashboard.humidityLevel']}
             </CardTitle>
-            <CardDescription>Current humidity with trend</CardDescription>
+            <CardDescription>{t['dashboard.currentHumidity']}</CardDescription>
           </CardHeader>
           <CardContent className="flex flex-col items-center">
             {current ? (
@@ -390,15 +390,15 @@ export default function Dashboard(){
                 <div className="text-center">
                   <div className="text-2xl font-bold text-green-600">{current.humidity}%</div>
                   <div className="text-sm text-gray-500">
-                    {current.humidity > 70 ? 'High humidity - watch for diseases' :
-                     current.humidity > 40 ? 'Ideal humidity range' :
-                     'Low humidity - increase watering'}
+                    {current.humidity > 70 ? t['dashboard.highHumidityWatch'] :
+                     current.humidity > 40 ? t['dashboard.idealHumidity'] :
+                     t['dashboard.lowHumidityIncrease']}
                   </div>
                 </div>
               </div>
             ) : (
               <div className="h-32 flex items-center justify-center text-gray-500">
-                Loading humidity data...
+                {t['dashboard.loadingHumidity']}
               </div>
             )}
           </CardContent>
@@ -411,9 +411,9 @@ export default function Dashboard(){
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <AlertTriangle className="text-amber-600" size={20}/>
-              Smart Farming Advisories
+              {t['dashboard.smartAdvisories']}
             </CardTitle>
-            <CardDescription>AI-powered recommendations based on current conditions</CardDescription>
+            <CardDescription>{t['dashboard.aiRecommendations']}</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
@@ -442,12 +442,12 @@ export default function Dashboard(){
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-sm">
                 <Eye className="text-purple-600" size={16}/>
-                Visibility
+                {t['dashboard.visibility']}
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-purple-600">{current.visibility} km</div>
-              <div className="text-xs text-gray-500">Clear visibility for field work</div>
+              <div className="text-xs text-gray-500">{t['dashboard.clearVisibility']}</div>
             </CardContent>
           </Card>
 
@@ -455,12 +455,12 @@ export default function Dashboard(){
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-sm">
                 <Activity className="text-indigo-600" size={16}/>
-                Pressure
+                {t['dashboard.pressure']}
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-indigo-600">{current.pressure} hPa</div>
-              <div className="text-xs text-gray-500">Atmospheric pressure</div>
+              <div className="text-xs text-gray-500">{t['dashboard.atmosphericPressure']}</div>
             </CardContent>
           </Card>
 
@@ -468,12 +468,12 @@ export default function Dashboard(){
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-sm">
                 <TrendingUp className="text-emerald-600" size={16}/>
-                Precipitation
+                {t['dashboard.precipitation']}
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-emerald-600">{current.precip} mm</div>
-              <div className="text-xs text-gray-500">Current precipitation</div>
+              <div className="text-xs text-gray-500">{t['dashboard.currentPrecipitation']}</div>
             </CardContent>
           </Card>
         </div>

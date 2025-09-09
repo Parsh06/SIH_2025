@@ -1,4 +1,5 @@
 
+import { motion } from 'framer-motion';
 import React, { useState } from 'react';
 import Page from '../components/Page';
 import Button from '../components/ui/button';
@@ -18,17 +19,33 @@ export default function Chat(){
 
   return (
     <Page title={t["chat.title"]}>
-      <div className="card p-4 h-[60vh] overflow-y-auto space-y-2">
+      <motion.div 
+        className="card p-4 h-[60vh] overflow-y-auto space-y-2"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
         {messages.map((m,i)=>(
-          <div key={i} className={`max-w-[75%] px-3 py-2 rounded-2xl ${m.role==='assistant'?'bg-leaf-50':'bg-white border border-leaf-200 ml-auto'}`}>
+          <motion.div 
+            key={i} 
+            className={`max-w-[75%] px-3 py-2 rounded-2xl ${m.role==='assistant'?'bg-leaf-50':'bg-white border border-leaf-200 ml-auto'}`}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.1 }}
+          >
             {m.content}
-          </div>
+          </motion.div>
         ))}
-      </div>
-      <div className="mt-3 flex gap-2">
-        <Input value={text} onChange={e=>setText(e.target.value)} placeholder="Ask about your crop…" />
-        <Button onClick={send}>{t["action.send"]||'Send'}</Button>
-      </div>
+      </motion.div>
+      <motion.div 
+        className="mt-3 flex gap-2"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+      >
+        <Input value={text} onChange={e=>setText(e.target.value)} placeholder={t["chat.placeholder"]} />
+        <Button onClick={send}>{t["action.send"]}</Button>
+      </motion.div>
     </Page>
   );
 }

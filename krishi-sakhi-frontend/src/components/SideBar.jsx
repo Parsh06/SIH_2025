@@ -9,7 +9,8 @@ import {
   MdPriceChange,
   MdTipsAndUpdates,
 } from "react-icons/md";
-import { NavLink } from "react-router-dom";
+import { Leaf } from 'lucide-react';
+import { Link, NavLink } from "react-router-dom";
 import { useI18n } from "../context/I18nContext";
 
 const linkClass = ({ isActive }) =>
@@ -22,8 +23,20 @@ const linkClass = ({ isActive }) =>
 export default function SideBar() {
   const { t } = useI18n();
   return (
-    <aside className="p-6 space-y-3">
-      <NavLink to="/dashboard" className={linkClass}>
+    <aside className="space-y-3">
+      {/* Logo and Title at the very top */}
+      <div className="p-6 pb-4 border-b border-leaf-200">
+        <div className="flex items-center gap-3">
+          <Link to="/" className="w-9 h-9 rounded-2xl bg-leaf-600 text-white grid place-items-center font-bold hover:scale-105 transition-transform">
+            <Leaf size={18} />
+          </Link>
+          <Link to="/" className="font-semibold text-lg hover:text-leaf-700">{t["app.title"]}</Link>
+        </div>
+      </div>
+      
+      {/* Navigation Links */}
+      <div className="p-6 pt-4 space-y-3">
+        <NavLink to="/dashboard" className={linkClass}>
         <MdDashboard /> <span>{t["nav.dashboard"]}</span>
       </NavLink>
       <NavLink to="/profile" className={linkClass}>
@@ -50,9 +63,10 @@ export default function SideBar() {
       <NavLink to="/chat" className={linkClass}>
         <MdChatBubble /> <span>{t["nav.chat"]}</span>
       </NavLink>
-      <NavLink to="/settings" className={linkClass}>
-        <MdTipsAndUpdates /> <span>{t["nav.settings"]}</span>
-      </NavLink>
+        <NavLink to="/settings" className={linkClass}>
+          <MdTipsAndUpdates /> <span>{t["nav.settings"]}</span>
+        </NavLink>
+      </div>
     </aside>
   );
 }

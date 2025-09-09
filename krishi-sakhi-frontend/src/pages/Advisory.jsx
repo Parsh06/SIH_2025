@@ -96,12 +96,12 @@ export default function Advisory(){
   ];
 
   const categories = [
-    { id: 'all', label: 'All Advisories', icon: Filter },
-    { id: 'weather', label: 'Weather', icon: Sun },
-    { id: 'pests', label: 'Pests & Diseases', icon: Bug },
-    { id: 'soil', label: 'Soil & Water', icon: Droplets },
-    { id: 'harvest', label: 'Harvest', icon: Calendar },
-    { id: 'equipment', label: 'Equipment', icon: Shield }
+    { id: 'all', label: t['advisory.allAdvisories'], icon: Filter },
+    { id: 'weather', label: t['advisory.weather'], icon: Sun },
+    { id: 'pests', label: t['advisory.pests'], icon: Bug },
+    { id: 'soil', label: t['advisory.soil'], icon: Droplets },
+    { id: 'harvest', label: t['advisory.harvest'], icon: Calendar },
+    { id: 'equipment', label: t['advisory.equipment'], icon: Shield }
   ];
 
   const filteredAdvisories = advisories.filter(advisory => {
@@ -131,7 +131,7 @@ export default function Advisory(){
   };
 
   return (
-    <Page title="Smart Advisory" subtitle="AI-powered farming recommendations and alerts">
+    <Page title={t['advisory.title']} subtitle={t['advisory.subtitle']}>
       {/* Filters and Search */}
       <div className="mb-6">
         <div className="flex flex-col lg:flex-row gap-4">
@@ -141,7 +141,7 @@ export default function Advisory(){
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
               <input
                 type="text"
-                placeholder="Search advisories..."
+                placeholder={t['advisory.searchPlaceholder']}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-leaf-500 focus:border-transparent"
@@ -209,7 +209,7 @@ export default function Advisory(){
                     <div className="flex items-start gap-2">
                       <TrendingUp size={16} className="text-leaf-600 mt-0.5" />
                       <div>
-                        <p className="text-sm font-medium text-gray-800">Recommended Action:</p>
+                        <p className="text-sm font-medium text-gray-800">{t['advisory.recommendedAction']}</p>
                         <p className="text-sm text-gray-600">{advisory.action}</p>
                       </div>
                     </div>
@@ -228,7 +228,7 @@ export default function Advisory(){
             <div className="text-3xl font-bold text-red-600 mb-2">
               {advisories.filter(a => a.priority === 'high').length}
             </div>
-            <div className="text-sm text-gray-600">High Priority</div>
+            <div className="text-sm text-gray-600">{t['advisory.highPriority']}</div>
           </CardContent>
         </Card>
         <Card className="text-center">
@@ -236,7 +236,7 @@ export default function Advisory(){
             <div className="text-3xl font-bold text-yellow-600 mb-2">
               {advisories.filter(a => a.priority === 'medium').length}
             </div>
-            <div className="text-sm text-gray-600">Medium Priority</div>
+            <div className="text-sm text-gray-600">{t['advisory.mediumPriority']}</div>
           </CardContent>
         </Card>
         <Card className="text-center">
@@ -244,7 +244,7 @@ export default function Advisory(){
             <div className="text-3xl font-bold text-green-600 mb-2">
               {advisories.filter(a => a.priority === 'low').length}
             </div>
-            <div className="text-sm text-gray-600">Low Priority</div>
+            <div className="text-sm text-gray-600">{t['advisory.lowPriority']}</div>
           </CardContent>
         </Card>
         <Card className="text-center">
@@ -252,7 +252,7 @@ export default function Advisory(){
             <div className="text-3xl font-bold text-blue-600 mb-2">
               {advisories.length}
             </div>
-            <div className="text-sm text-gray-600">Total Advisories</div>
+            <div className="text-sm text-gray-600">{t['advisory.totalAdvisories']}</div>
           </CardContent>
         </Card>
       </div>
