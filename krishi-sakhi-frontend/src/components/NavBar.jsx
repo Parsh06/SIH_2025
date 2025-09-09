@@ -1,51 +1,126 @@
-import React from "react";
-import LanguageToggle from "./LanguageToggle";
-import { useI18n } from "../context/I18nContext";
-import {
-  MdAgriculture,
-  MdNotificationsNone,
-  MdAccountCircle,
-} from "react-icons/md";
-import Button from "./ui/button";
-import NavUserMenu from "./NavUserMenu";
-import Input from "./ui/input";
+import { Leaf, LogOut, Menu, X } from 'lucide-react';
+import React, { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { useI18n } from '../context/I18nContext';
+import LanguageToggle from './LanguageToggle';
 
-export default function NavBar() {
+export default function NavBar(){
   const { t } = useI18n();
+  const { user, logout } = useAuth();
+  const location = useLocation();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Check if user is on landing page
+  const isLandingPage = location.pathname === '/' || location.pathname === '/features';
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      setMobileMenuOpen(false);
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  };
+
   return (
-    <div className="sticky top-0 z-40 bg-white/80 backdrop-blur supports-[backdrop-filter]:bg-white/60 border-b border-leaf-100">
-      <div className="max-w-7xl mx-auto container-px py-3 flex items-center gap-3">
-        <div className="w-10 h-10 rounded-2xl bg-leaf-600 text-white grid place-items-center shadow-soft">
-          <MdAgriculture size={22} />
-        </div>
-        <div className="font-semibold text-lg tracking-tight text-soil-800">
-          {t["app.title"]}
-        </div>
-        <div className="text-soil-700 hidden lg:block">
-          {t["app.tagline"] || "Grow smarter with timely insights"}
-        </div>
-        <div className="ml-auto hidden md:flex items-center gap-2">
-          <div className="hidden md:flex items-center gap-2 bg-white border border-leaf-200 rounded-2xl px-3 py-1.5 shadow-soft">
-            <input
-              className="outline-none text-sm placeholder:text-soil-700/60"
-              placeholder={t["search"] || "Search..."}
-            />
+    <div className="sticky top-0 z-40 bg-white/80 backdrop-blur border-b border-leaf-100">
+      <div className="max-w-7xl mx-auto px-4 py-3 flex items-center gap-3">
+        <Link to="/" className="w-9 h-9 rounded-2xl bg-leaf-600 text-white grid place-items-center font-bold hover:scale-105 transition-transform">
+          <Leaf size={18} />
+        </Link>
+        <Link to="/" className="font-semibold text-lg hover:text-leaf-700">{t["app.title"]}</Link>
+
+
+        <div className="ml-auto flex items-center gap-2">
+          <LanguageToggle />
+
+          {/* Auth Links - Show different content based on authentication status */}
+          <div className="hidden md:flex items-center gap-2">
+            {user ? (
+              // Authenticated user - show logout and profile
+              <>
+                <Link to="/profile" className="px-3 py-1.5 rounded-xl hover:bg-leaf-50 transition-colors text-sm">
+                  Profile
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="px-3 py-1.5 rounded-xl hover:bg-red-50 text-red-600 transition-colors text-sm flex items-center gap-1"
+                >
+                  <LogOut size={14} />
+                  Logout
+                </button>
+              </>
+            ) : (
+              // Guest user - show login/signup
+              <>
+                <Link to="/login" className="px-3 py-1.5 rounded-xl hover:bg-leaf-50 transition-colors text-sm">
+                  {t["auth.loginLink"]}
+                </Link>
+                <Link to="/signup" className="px-3 py-1.5 rounded-xl bg-leaf-600 text-white hover:bg-leaf-700 transition-colors text-sm">
+                  {t["auth.signupLink"]}
+                </Link>
+              </>
+            )}
           </div>
-          <Button
-            variant="outline"
-            aria-label="Notifications"
-            title="Notifications"
-            className="!px-3"
+
+          {/* Mobile Menu Button */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="md:hidden p-2 rounded-lg hover:bg-leaf-50 transition-colors"
+            aria-label="Toggle mobile menu"
           >
-            <MdNotificationsNone size={18} />
-          </Button>
-          <LanguageToggle />
-          <NavUserMenu />
-        </div>
-        <div className="ml-auto md:hidden">
-          <LanguageToggle />
+            {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
         </div>
       </div>
+
+      {/* Mobile Navigation */}
+      {mobileMenuOpen && (
+        <div className="md:hidden border-t border-leaf-100 bg-white">
+
+          {/* Mobile Auth Links */}
+          <div className="px-4 py-3 border-t border-leaf-100 flex flex-col gap-2">
+            {user ? (
+              // Authenticated user mobile auth
+              <>
+                <Link
+                  to="/profile"
+                  className="px-3 py-2 rounded-xl hover:bg-leaf-50 transition-colors text-sm text-center"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Profile
+                </Link>
+                <button
+                  onClick={handleLogout}
+                  className="px-3 py-2 rounded-xl hover:bg-red-50 text-red-600 transition-colors text-sm text-center flex items-center justify-center gap-1"
+                >
+                  <LogOut size={14} />
+                  Logout
+                </button>
+              </>
+            ) : (
+              // Guest user mobile auth
+              <>
+                <Link
+                  to="/login"
+                  className="px-3 py-2 rounded-xl hover:bg-leaf-50 transition-colors text-sm text-center"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {t["auth.loginLink"]}
+                </Link>
+                <Link
+                  to="/signup"
+                  className="px-3 py-2 rounded-xl bg-leaf-600 text-white hover:bg-leaf-700 transition-colors text-sm text-center"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {t["auth.signupLink"]}
+                </Link>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

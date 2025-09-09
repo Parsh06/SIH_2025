@@ -1,3 +1,4 @@
+
 import React from 'react';
 import Page from '../components/Page';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/card';
@@ -21,7 +22,7 @@ export default function Knowledge(){
               <CardDescription>{it.desc}</CardDescription>
             </CardHeader>
             <CardContent>
-              <a className="btn btn-outline" href="#" onClick={e=>e.preventDefault()}>Read</a>
+              <button className="btn btn-outline" onClick={e=>e.preventDefault()}>Read</button>
             </CardContent>
           </Card>
         ))}

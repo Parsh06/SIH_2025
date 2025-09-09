@@ -1,15 +1,15 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
 import {
+  MdChatBubble,
   MdDashboard,
   MdEventNote,
-  MdTipsAndUpdates,
-  MdChatBubble,
   MdSettings,
+  MdTipsAndUpdates,
 } from "react-icons/md";
+import { NavLink } from "react-router-dom";
 
 const navItems = [
-  { to: "/", icon: MdDashboard, label: "Home" },
+  { to: "/dashboard", icon: MdDashboard, label: "Home" },
   { to: "/activity", icon: MdEventNote, label: "Activity" },
   { to: "/advisory", icon: MdTipsAndUpdates, label: "Advisory" },
   { to: "/chat", icon: MdChatBubble, label: "Chat" },

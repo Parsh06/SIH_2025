@@ -1,31 +1,39 @@
 import React from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import AppLayout from './components/AppLayout';
-import Dashboard from './pages/Dashboard';
-import Profile from './pages/Profile';
+import GuestRoute from './components/GuestRoute';
+import ProtectedRoute from './components/ProtectedRoute';
 import Activity from './pages/Activity';
 import Advisory from './pages/Advisory';
-import Reminders from './pages/Reminders';
-import Knowledge from './pages/Knowledge';
 import Chat from './pages/Chat';
-import Settings from './pages/Settings';
-import Prices from './pages/Prices';
+import Dashboard from './pages/Dashboard';
+import Knowledge from './pages/Knowledge';
 import Login from './pages/Login';
+import Prices from './pages/Prices';
+import Profile from './pages/Profile';
+import Reminders from './pages/Reminders';
+import Schemes from './pages/Schemes';
+import Settings from './pages/Settings';
 import Signup from './pages/Signup';
-import ProtectedRoute from './components/ProtectedRoute';
-import GuestRoute from './components/GuestRoute';
+import Landing from './pages/landing';
 
 export default function App(){
   return (
     <Routes>
+      {/* Public Landing Page */}
+      <Route path="/" element={<Landing />} />
+      <Route path="/features" element={<Landing />} />
+
+      {/* Guest Routes (Login/Signup) */}
       <Route element={<GuestRoute />}>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
       </Route>
 
+      {/* Protected Routes (Dashboard and other pages) */}
       <Route element={<ProtectedRoute />}>
         <Route
-          path="/"
+          path="/dashboard"
           element={
             <AppLayout>
               <Dashboard />
@@ -37,6 +45,7 @@ export default function App(){
         <Route path="/advisory" element={<AppLayout><Advisory /></AppLayout>} />
         <Route path="/reminders" element={<AppLayout><Reminders /></AppLayout>} />
         <Route path="/knowledge" element={<AppLayout><Knowledge /></AppLayout>} />
+        <Route path="/schemes" element={<AppLayout><Schemes /></AppLayout>} />
         <Route path="/prices" element={<AppLayout><Prices /></AppLayout>} />
         <Route path="/chat" element={<AppLayout><Chat /></AppLayout>} />
         <Route path="/settings" element={<AppLayout><Settings /></AppLayout>} />
