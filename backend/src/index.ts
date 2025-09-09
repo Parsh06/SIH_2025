@@ -1,30 +1,31 @@
 import express, { Application, Request, Response } from 'express';
-import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
-import { errorHandler } from '@/middlewares/errorHandler';
+import connectDB from '@/config/db';
+import { errorHandler, notFound } from '@/middlewares/errorHandler';
 
 dotenv.config();
 
-const app: Application = express();
-const PORT = process.env.PORT || 3000;
+// Connect to MongoDB
+connectDB();
 
-// Middleware
-app.use(bodyParser.json());
+const app: Application = express();
+const PORT = process.env.PORT || 5000;
+
+// Middleware to parse JSON
+app.use(express.json());
 
 // Health check route
 app.get('/', (req: Request, res: Response) => {
-  res.send('Krishi Sakhi Backend is running...');
+  res.send('API is running...');
 });
 
-// 404 handler
-app.use((req: Request, res: Response) => {
-  res.status(404).json({ message: 'Route not found' });
-});
+// 404 Not Found Middleware
+app.use(notFound);
 
 // Global error handler middleware
 app.use(errorHandler);
 
 // Start server
 app.listen(PORT, () => {
-  console.log(`🚀 Server running at http://localhost:${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
