@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion';
 import React from 'react';
 import { useI18n } from '../context/I18nContext';
 import schemesData from "../data/schemeData";
@@ -31,38 +32,54 @@ export default function Schemes() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="space-y-2">
+      <motion.div 
+        className="space-y-2"
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
         <h1 className="text-3xl font-bold text-soil-900">{t['schemes.title']}</h1>
         <p className="text-soil-600">{t['schemes.subtitle']}</p>
-      </div>
+      </motion.div>
 
       {/* Schemes Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {schemesData.map((scheme) => (
-          <Card
+        {schemesData.map((scheme, index) => (
+          <motion.div
             key={scheme.id}
-            className="cursor-pointer hover:shadow-lg transition-all duration-300 hover:scale-105 border border-leaf-200 hover:border-leaf-300"
-            onClick={() => handleSchemeClick(scheme.id)}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.1 }}
           >
-            <div className="p-6 space-y-3">
-              <h3 className="text-xl font-semibold text-soil-900 line-clamp-2">
-                {scheme.name}
-              </h3>
-              <p className="text-soil-600 text-sm leading-relaxed line-clamp-3">
-                {scheme.description}
-              </p>
-              <div className="pt-2">
-                <span className="inline-flex items-center text-leaf-600 text-sm font-medium">
-                  Learn More →
-                </span>
+            <Card
+              className="cursor-pointer hover:shadow-lg transition-all duration-300 hover:scale-105 border border-leaf-200 hover:border-leaf-300"
+              onClick={() => handleSchemeClick(scheme.id)}
+            >
+              <div className="p-6 space-y-3">
+                <h3 className="text-xl font-semibold text-soil-900 line-clamp-2">
+                  {scheme.name}
+                </h3>
+                <p className="text-soil-600 text-sm leading-relaxed line-clamp-3">
+                  {scheme.description}
+                </p>
+                <div className="pt-2">
+                  <span className="inline-flex items-center text-leaf-600 text-sm font-medium">
+                    {t['schemes.learnMore']}
+                  </span>
+                </div>
               </div>
-            </div>
-          </Card>
+            </Card>
+          </motion.div>
         ))}
       </div>
 
       {/* Info Section */}
-      <div className="mt-8 p-6 bg-leaf-50 rounded-xl border border-leaf-200">
+      <motion.div 
+        className="mt-8 p-6 bg-leaf-50 rounded-xl border border-leaf-200"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.8 }}
+      >
         <div className="flex items-start space-x-3">
           <div className="flex-shrink-0">
             <svg className="w-6 h-6 text-leaf-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -78,7 +95,7 @@ export default function Schemes() {
             </p>
           </div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

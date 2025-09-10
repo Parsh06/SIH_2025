@@ -12,6 +12,7 @@ import Chat from "./pages/Chat";
 import Dashboard from "./pages/Dashboard";
 import Knowledge from "./pages/Knowledge";
 import Login from "./pages/Login";
+import NearbyMarketPlace from "./pages/NearbyMarketPlace";
 import Prices from "./pages/Prices";
 import Profile from "./pages/Profile";
 import Reminders from "./pages/Reminders";
@@ -102,6 +103,14 @@ function AppContent() {
           element={
             <AppLayout>
               <Prices />
+            </AppLayout>
+          }
+        />
+        <Route
+          path="/marketplace"
+          element={
+            <AppLayout>
+              <NearbyMarketPlace />
             </AppLayout>
           }
         />

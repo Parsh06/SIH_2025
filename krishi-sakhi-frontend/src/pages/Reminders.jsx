@@ -43,7 +43,7 @@ export default function Reminders() {
     <Page title={t["reminders.title"]}>
       <div className="grid md:grid-cols-3 gap-2">
         <Input
-          placeholder="Reminder text"
+          placeholder={t["reminders.placeholder"]}
           value={text}
           onChange={(e) => setText(e.target.value)}
         />
@@ -53,7 +53,7 @@ export default function Reminders() {
           onChange={(e) => setDate(e.target.value)}
         />
         <Button onClick={add} disabled={isAdding || loading.reminders}>
-          {isAdding ? "Adding..." : t["action.add"]}
+          {isAdding ? "Adding..." : t["reminders.addReminder"]}
         </Button>
       </div>
 

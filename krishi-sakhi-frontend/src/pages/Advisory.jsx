@@ -29,36 +29,36 @@ export default function Advisory(){
   const advisories = [
     {
       id: 1,
-      title: "High Temperature Alert",
-      description: "Temperatures are expected to reach 38°C today. Increase irrigation frequency and provide shade for sensitive crops.",
+      title: t["advisory.highTempAlert"],
+      description: t["advisory.highTempDescription"],
       severity: "warning",
       category: "weather",
       icon: Sun,
       time: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 hours ago
       priority: "high",
-      action: "Water crops in early morning and evening. Use shade nets if available."
+      action: t["advisory.highTempAction"]
     },
     {
       id: 2,
-      title: "Rain Probability High",
-      description: "70% chance of rain in the next 3 days. Plan irrigation accordingly and harvest if ready.",
+      title: t["advisory.rainProbabilityHigh"],
+      description: t["advisory.rainProbabilityDescription"],
       severity: "info",
       category: "weather",
       icon: Droplets,
       time: new Date(Date.now() - 4 * 60 * 60 * 1000), // 4 hours ago
       priority: "medium",
-      action: "Reduce irrigation and prepare for potential flooding in low areas."
+      action: t["advisory.rainProbabilityAction"]
     },
     {
       id: 3,
-      title: "Pest Alert - Aphids Detected",
-      description: "Aphid infestation detected in your rice field. Immediate treatment recommended.",
+      title: t["advisory.pestAlert"],
+      description: t["advisory.pestDescription"],
       severity: "error",
       category: "pests",
       icon: Bug,
       time: new Date(Date.now() - 6 * 60 * 60 * 1000), // 6 hours ago
       priority: "high",
-      action: "Apply neem oil spray or contact your local agricultural extension officer."
+      action: t["advisory.pestAction"]
     },
     {
       id: 4,
@@ -96,12 +96,12 @@ export default function Advisory(){
   ];
 
   const categories = [
-    { id: 'all', label: 'All Advisories', icon: Filter },
-    { id: 'weather', label: 'Weather', icon: Sun },
-    { id: 'pests', label: 'Pests & Diseases', icon: Bug },
-    { id: 'soil', label: 'Soil & Water', icon: Droplets },
-    { id: 'harvest', label: 'Harvest', icon: Calendar },
-    { id: 'equipment', label: 'Equipment', icon: Shield }
+    { id: 'all', label: t['advisory.allAdvisories'], icon: Filter },
+    { id: 'weather', label: t['advisory.weather'], icon: Sun },
+    { id: 'pests', label: t['advisory.pests'], icon: Bug },
+    { id: 'soil', label: t['advisory.soil'], icon: Droplets },
+    { id: 'harvest', label: t['advisory.harvest'], icon: Calendar },
+    { id: 'equipment', label: t['advisory.equipment'], icon: Shield }
   ];
 
   const filteredAdvisories = advisories.filter(advisory => {
@@ -131,7 +131,7 @@ export default function Advisory(){
   };
 
   return (
-    <Page title="Smart Advisory" subtitle="AI-powered farming recommendations and alerts">
+    <Page title={t['advisory.title']} subtitle={t['advisory.subtitle']}>
       {/* Filters and Search */}
       <div className="mb-6">
         <div className="flex flex-col lg:flex-row gap-4">
@@ -141,7 +141,7 @@ export default function Advisory(){
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
               <input
                 type="text"
-                placeholder="Search advisories..."
+                placeholder={t['advisory.searchPlaceholder']}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-leaf-500 focus:border-transparent"
@@ -209,7 +209,7 @@ export default function Advisory(){
                     <div className="flex items-start gap-2">
                       <TrendingUp size={16} className="text-leaf-600 mt-0.5" />
                       <div>
-                        <p className="text-sm font-medium text-gray-800">Recommended Action:</p>
+                        <p className="text-sm font-medium text-gray-800">{t['advisory.recommendedAction']}</p>
                         <p className="text-sm text-gray-600">{advisory.action}</p>
                       </div>
                     </div>
@@ -228,7 +228,7 @@ export default function Advisory(){
             <div className="text-3xl font-bold text-red-600 mb-2">
               {advisories.filter(a => a.priority === 'high').length}
             </div>
-            <div className="text-sm text-gray-600">High Priority</div>
+            <div className="text-sm text-gray-600">{t['advisory.highPriority']}</div>
           </CardContent>
         </Card>
         <Card className="text-center">
@@ -236,7 +236,7 @@ export default function Advisory(){
             <div className="text-3xl font-bold text-yellow-600 mb-2">
               {advisories.filter(a => a.priority === 'medium').length}
             </div>
-            <div className="text-sm text-gray-600">Medium Priority</div>
+            <div className="text-sm text-gray-600">{t['advisory.mediumPriority']}</div>
           </CardContent>
         </Card>
         <Card className="text-center">
@@ -244,7 +244,7 @@ export default function Advisory(){
             <div className="text-3xl font-bold text-green-600 mb-2">
               {advisories.filter(a => a.priority === 'low').length}
             </div>
-            <div className="text-sm text-gray-600">Low Priority</div>
+            <div className="text-sm text-gray-600">{t['advisory.lowPriority']}</div>
           </CardContent>
         </Card>
         <Card className="text-center">
@@ -252,7 +252,7 @@ export default function Advisory(){
             <div className="text-3xl font-bold text-blue-600 mb-2">
               {advisories.length}
             </div>
-            <div className="text-sm text-gray-600">Total Advisories</div>
+            <div className="text-sm text-gray-600">{t['advisory.totalAdvisories']}</div>
           </CardContent>
         </Card>
       </div>
