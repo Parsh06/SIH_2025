@@ -3,6 +3,11 @@ import Farmer from '@/models/farmer.model';
 import Farm from '@/models/farm.model';
 import Reminder from '@/models/reminder.model';
 
+// Extend Request interface locally
+interface AuthenticatedRequest extends Request {
+  user?: { uid: string };
+}
+
 export const getAllFarmers = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const farmers = await Farmer.find();
@@ -22,9 +27,20 @@ export const getFarmerById = async (req: Request, res: Response, next: NextFunct
   }
 };
 
-export const createFarmer = async (req: Request, res: Response, next: NextFunction) => {
+export const createFarmer = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
   try {
-    const farmer = new Farmer(req.body);
+    const { uid } = req.user!;
+    const existingFarmer = await Farmer.findOne({ firebaseUid: uid });
+
+    if (existingFarmer) {
+      return res.status(400).json({ message: 'Farmer already exists' });
+    }
+
+    const farmer = new Farmer({
+      ...req.body,
+      firebaseUid: uid,
+    });
+
     await farmer.save();
     res.status(201).json(farmer);
   } catch (error) {
@@ -32,9 +48,30 @@ export const createFarmer = async (req: Request, res: Response, next: NextFuncti
   }
 };
 
+export const getFarmerByUid = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+  try {
+    const { uid } = req.user!;
+    const farmer = await Farmer.findOne({ firebaseUid: uid });
+
+    if (!farmer) {
+      return res.status(404).json({ message: 'Farmer not found' });
+    }
+
+    res.json(farmer);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const updateFarmer = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const farmer = await Farmer.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const { id } = req.params;
+    const updateData = { ...req.body };
+    
+    // Don't allow updating firebaseUid
+    delete updateData.firebaseUid;
+    
+    const farmer = await Farmer.findByIdAndUpdate(id, updateData, { new: true });
     if (!farmer) return res.status(404).json({ message: 'Farmer not found' });
     res.json(farmer);
   } catch (error) {
