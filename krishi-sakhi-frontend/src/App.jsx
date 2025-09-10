@@ -6,6 +6,7 @@ import Preloader from "./components/Preloader";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { usePreloader } from "./context/PreloaderContext";
 import { DataProvider } from "./context/DataContext";
+import { ChatProvider } from "./context/ChatContext";
 import Activity from "./pages/Activity";
 import Advisory from "./pages/Advisory";
 import Chat from "./pages/Chat";
@@ -138,7 +139,9 @@ function AppContent() {
 export default function App() {
   return (
     <DataProvider>
-      <AppContent />
+      <ChatProvider>
+        <AppContent />
+      </ChatProvider>
     </DataProvider>
   );
 }

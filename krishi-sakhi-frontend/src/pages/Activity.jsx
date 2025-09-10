@@ -15,13 +15,18 @@ export default function Activity() {
   const [selectedFarm, setSelectedFarm] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Helper function to get farm display name by ID
-  const getFarmName = (farmId) => {
-    const farm = farms.find((f) => f._id === farmId);
-    if (farm) {
-      return farm.location || `Farm ${farmId.slice(-4)}`;
+  // Helper function to get farm display name by ID or object
+  const getFarmName = (farmValue) => {
+    if (!farmValue) return "Unknown Farm";
+
+    // If farm is an object, return its location
+    if (typeof farmValue === "object") {
+      return farmValue.location || `Farm ${farmValue._id?.slice(-4) || "??"}`;
     }
-    return farmId;
+
+    // Otherwise, assume it's an ID string
+    const farm = farms.find((f) => f._id === farmValue);
+    return farm ? farm.location || `Farm ${farm._id.slice(-4)}` : String(farmValue);
   };
 
   const add = async () => {
@@ -119,8 +124,10 @@ export default function Activity() {
       {/* Activities List */}
       <div className="mt-4">
         {loading.activities ? (
-          <div className="text-center py-4 text-soil-700">
-            Loading activities...
+          <div className="p-4">
+            <div className="animate-pulse text-center text-soil-700">
+              Loading activities...
+            </div>
           </div>
         ) : (
           <ul className="space-y-2">
