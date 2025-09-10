@@ -1,4 +1,5 @@
 import express, { Application, Request, Response } from 'express';
+import cors from 'cors';
 import dotenv from 'dotenv';
 import connectDB from '@/config/db';
 import { errorHandler, notFound } from '@/middlewares/errorHandler';
@@ -11,6 +12,14 @@ connectDB();
 
 const app: Application = express();
 const PORT = process.env.PORT || 5000;
+
+// CORS configuration
+app.use(cors({
+  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
 // Middleware to parse JSON
 app.use(express.json());

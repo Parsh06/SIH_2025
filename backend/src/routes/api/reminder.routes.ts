@@ -1,16 +1,17 @@
 import { Router } from 'express';
 import { listReminders, getReminderById, createReminder, updateReminder, deleteReminder } from '@/controllers/reminder.controllers';
+import { authenticateFirebase } from '@/middlewares/auth.middleware';
 
 const router = Router();
 
-router.get('/', listReminders);
+router.get('/', authenticateFirebase, listReminders);
 
-router.get('/:id', getReminderById);
+router.get('/:id', authenticateFirebase, getReminderById);
 
-router.post('/', createReminder);
+router.post('/', authenticateFirebase, createReminder);
 
-router.put('/:id', updateReminder);
+router.put('/:id', authenticateFirebase, updateReminder);
 
-router.delete('/:id', deleteReminder);
+router.delete('/:id', authenticateFirebase, deleteReminder);
 
 export default router;

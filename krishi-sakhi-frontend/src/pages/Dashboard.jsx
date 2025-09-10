@@ -12,22 +12,39 @@ import {
   Sun,
   ThermometerSun,
   TrendingUp,
-  Wind
-} from 'lucide-react';
-import React, { useEffect, useState } from 'react';
-import Radial from '../components/charts/Radial';
-import Counter from '../components/Counter';
-import Page from '../components/Page';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
-import { useI18n } from '../context/I18nContext';
-import { geocodeCity, geocodeSuggest, getForecast } from '../services/weather';
+  Wind,
+} from "lucide-react";
+import React, { useEffect, useState } from "react";
+import Radial from "../components/charts/Radial";
+import Counter from "../components/Counter";
+import Page from "../components/Page";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../components/ui/card";
+import { useI18n } from "../context/I18nContext";
+import { useData } from "../context/DataContext";
+import { geocodeCity, geocodeSuggest, getForecast } from "../services/weather";
 
-export default function Dashboard(){
+export default function Dashboard() {
   const { t } = useI18n();
-  const [city, setCity] = useState('Kerala');
-  const [country, setCountry] = useState('IN');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const {
+    farmer,
+    farms,
+    activities,
+    advisories: backendAdvisories,
+    reminders,
+    loading,
+    error: dataError,
+  } = useData();
+
+  const [city, setCity] = useState("Kerala");
+  const [country, setCountry] = useState("IN");
+  const [weatherLoading, setWeatherLoading] = useState(false);
+  const [weatherError, setWeatherError] = useState("");
   const [current, setCurrent] = useState(null);
   const [daily, setDaily] = useState(null);
   const [suggest, setSuggest] = useState([]);
@@ -41,8 +58,9 @@ export default function Dashboard(){
     return () => clearInterval(timer);
   }, []);
 
-  async function loadByName(cityName){
-    setLoading(true); setError('');
+  async function loadByName(cityName) {
+    setWeatherLoading(true);
+    setWeatherError("");
     try {
       const geo = await geocodeCity(cityName, country);
       const data = await getForecast(geo);
@@ -51,7 +69,9 @@ export default function Dashboard(){
         humidity: Math.round(data.current.relative_humidity_2m),
         wind: Math.round(data.current.wind_speed_10m),
         precip: data.current.precipitation,
-        feelsLike: Math.round(data.current.temperature_2m + (data.current.wind_speed_10m * 0.1)),
+        feelsLike: Math.round(
+          data.current.temperature_2m + data.current.wind_speed_10m * 0.1
+        ),
         uvIndex: Math.round(Math.random() * 10), // Mock UV index
         pressure: Math.round(1013 + Math.random() * 20), // Mock pressure
         visibility: Math.round(10 + Math.random() * 5), // Mock visibility
@@ -63,22 +83,24 @@ export default function Dashboard(){
         windMax: data.daily.wind_speed_10m_max,
         dates: data.daily.time,
         humidity: data.daily.relative_humidity_2m_max || [],
-        precipitation: data.daily.precipitation_sum || []
+        precipitation: data.daily.precipitation_sum || [],
       });
     } catch (e) {
-      setError(e.message || 'Failed to load weather');
+      setWeatherError(e.message || "Failed to load weather");
     } finally {
-      setLoading(false);
+      setWeatherLoading(false);
     }
   }
 
-  async function onType(val){
+  async function onType(val) {
     setCity(val);
-    const results = await geocodeSuggest(val, country, 6).catch(()=>[]);
+    const results = await geocodeSuggest(val, country, 6).catch(() => []);
     setSuggest(results);
   }
 
-  useEffect(()=>{ loadByName(city); }, []);
+  useEffect(() => {
+    loadByName(city);
+  }, []);
 
   const highs = daily?.tempMax || [];
   const lows = daily?.tempMin || [];
@@ -96,44 +118,44 @@ export default function Dashboard(){
     // Temperature advisory
     if (current.temp > 35) {
       advisories.push({
-        type: 'warning',
+        type: "warning",
         icon: ThermometerSun,
-        text: 'High temperature detected. Increase irrigation frequency and provide shade for sensitive crops.',
-        color: 'text-orange-600'
+        text: "High temperature detected. Increase irrigation frequency and provide shade for sensitive crops.",
+        color: "text-orange-600",
       });
     } else if (current.temp < 15) {
       advisories.push({
-        type: 'info',
+        type: "info",
         icon: Cloud,
-        text: 'Low temperature. Consider covering sensitive plants and reduce watering.',
-        color: 'text-blue-600'
+        text: "Low temperature. Consider covering sensitive plants and reduce watering.",
+        color: "text-blue-600",
       });
     }
 
     // Humidity advisory
     if (current.humidity > 80) {
       advisories.push({
-        type: 'warning',
+        type: "warning",
         icon: AlertTriangle,
-        text: 'High humidity increases disease risk. Ensure good air circulation and avoid overhead watering.',
-        color: 'text-red-600'
+        text: "High humidity increases disease risk. Ensure good air circulation and avoid overhead watering.",
+        color: "text-red-600",
       });
     } else if (current.humidity < 30) {
       advisories.push({
-        type: 'info',
+        type: "info",
         icon: Droplets,
-        text: 'Low humidity. Increase watering frequency and consider mulching to retain moisture.',
-        color: 'text-blue-600'
+        text: "Low humidity. Increase watering frequency and consider mulching to retain moisture.",
+        color: "text-blue-600",
       });
     }
 
     // Wind advisory
     if (current.wind > 15) {
       advisories.push({
-        type: 'warning',
+        type: "warning",
         icon: Wind,
-        text: 'Strong winds detected. Avoid spraying pesticides and secure any loose structures.',
-        color: 'text-orange-600'
+        text: "Strong winds detected. Avoid spraying pesticides and secure any loose structures.",
+        color: "text-orange-600",
       });
     }
 
@@ -141,10 +163,10 @@ export default function Dashboard(){
     const avgRainProb = rain.reduce((a, b) => a + b, 0) / rain.length;
     if (avgRainProb > 60) {
       advisories.push({
-        type: 'info',
+        type: "info",
         icon: CloudRain,
-        text: 'High rain probability this week. Plan irrigation accordingly and harvest if ready.',
-        color: 'text-blue-600'
+        text: "High rain probability this week. Plan irrigation accordingly and harvest if ready.",
+        color: "text-blue-600",
       });
     }
 
@@ -154,7 +176,10 @@ export default function Dashboard(){
   const advisories = getAdvisory();
 
   return (
-    <Page title="Dashboard" subtitle="Smart farming insights and weather monitoring">
+    <Page
+      title="Dashboard"
+      subtitle="Smart farming insights and weather monitoring"
+    >
       {/* Header with Search and Time */}
       <div className="mb-6">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
@@ -172,37 +197,41 @@ export default function Dashboard(){
           {/* Search */}
           <div className="relative flex-1 max-w-md">
             <div className="flex items-center gap-2 bg-white rounded-xl border border-gray-200 p-2">
-              <MapPin className="text-leaf-600" size={18}/>
+              <MapPin className="text-leaf-600" size={18} />
               <input
                 value={city}
-                onChange={e=>onType(e.target.value)}
+                onChange={(e) => onType(e.target.value)}
                 placeholder="Search city or district..."
                 className="flex-1 outline-none text-sm"
               />
               <select
                 value={country}
-                onChange={e=>setCountry(e.target.value)}
+                onChange={(e) => setCountry(e.target.value)}
                 className="border-none outline-none text-sm bg-transparent"
               >
                 <option value="IN">India</option>
                 <option value="">Any</option>
               </select>
               <button
-                onClick={()=>loadByName(city)}
+                onClick={() => loadByName(city)}
                 className="bg-leaf-600 text-white p-2 rounded-lg hover:bg-leaf-700 transition-colors"
                 disabled={loading}
               >
-                <Search size={16}/>
+                <Search size={16} />
               </button>
             </div>
 
             {suggest.length > 0 && (
               <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-xl shadow-lg z-10 max-h-48 overflow-y-auto">
-                {suggest.map((s, i)=>(
+                {suggest.map((s, i) => (
                   <div
                     key={i}
                     className="px-4 py-2 hover:bg-gray-50 cursor-pointer text-sm border-b border-gray-100 last:border-b-0"
-                    onClick={()=>{ setCity(s.label); setSuggest([]); loadByName(s.label); }}
+                    onClick={() => {
+                      setCity(s.label);
+                      setSuggest([]);
+                      loadByName(s.label);
+                    }}
                   >
                     {s.label}
                   </div>
@@ -211,8 +240,145 @@ export default function Dashboard(){
             )}
           </div>
         </div>
-        {error && <div className="mt-2 text-sm text-red-600 bg-red-50 p-2 rounded-lg">{error}</div>}
+        {(weatherError || dataError) && (
+          <div className="mt-2 text-sm text-red-600 bg-red-50 p-2 rounded-lg">
+            {weatherError || dataError}
+          </div>
+        )}
       </div>
+
+      {/* Farmer Profile & Farm Data Overview */}
+      {farmer && (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <Card className="bg-gradient-to-br from-green-50 to-green-100 border-green-200">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="flex items-center gap-2 text-green-600 mb-2">
+                    <Activity size={20} />
+                    <span className="text-sm font-medium">Profile</span>
+                  </div>
+                  <div className="text-lg font-bold text-green-800">
+                    {farmer.name || "Farmer"}
+                  </div>
+                  <div className="text-sm text-green-600">
+                    {farmer.location || "Location not set"}
+                  </div>
+                </div>
+                <div className="text-4xl">👨‍🌾</div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="flex items-center gap-2 text-blue-600 mb-2">
+                    <MapPin size={20} />
+                    <span className="text-sm font-medium">Farms</span>
+                  </div>
+                  <div className="text-3xl font-bold text-blue-800">
+                    <Counter end={farms.length} duration={1} />
+                  </div>
+                  <div className="text-sm text-blue-600">
+                    {farms.length === 0
+                      ? "No farms registered"
+                      : farms.length === 1
+                      ? "1 farm registered"
+                      : `${farms.length} farms registered`}
+                  </div>
+                </div>
+                <div className="text-4xl">🚜</div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="flex items-center gap-2 text-purple-600 mb-2">
+                    <Calendar size={20} />
+                    <span className="text-sm font-medium">Activities</span>
+                  </div>
+                  <div className="text-3xl font-bold text-purple-800">
+                    <Counter end={activities.length} duration={1} />
+                  </div>
+                  <div className="text-sm text-purple-600">
+                    {activities.length === 0
+                      ? "No activities recorded"
+                      : activities.length === 1
+                      ? "1 activity recorded"
+                      : `${activities.length} activities recorded`}
+                  </div>
+                </div>
+                <div className="text-4xl">📋</div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-gradient-to-br from-orange-50 to-orange-100 border-orange-200">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="flex items-center gap-2 text-orange-600 mb-2">
+                    <AlertTriangle size={20} />
+                    <span className="text-sm font-medium">Reminders</span>
+                  </div>
+                  <div className="text-3xl font-bold text-orange-800">
+                    <Counter end={reminders.length} duration={1} />
+                  </div>
+                  <div className="text-sm text-orange-600">
+                    {reminders.length === 0
+                      ? "No pending reminders"
+                      : reminders.length === 1
+                      ? "1 pending reminder"
+                      : `${reminders.length} pending reminders`}
+                  </div>
+                </div>
+                <div className="text-4xl">⏰</div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {/* Farm Details */}
+      {farms.length > 0 && (
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <MapPin className="text-green-600" size={20} />
+              Your Farms
+            </CardTitle>
+            <CardDescription>
+              Manage and monitor your farming operations
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {farms.map((farm) => (
+                <div
+                  key={farm._id}
+                  className="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow"
+                >
+                  <h3 className="font-semibold text-gray-800 mb-2">
+                    {farm.name}
+                  </h3>
+                  <p className="text-sm text-gray-600 mb-2">{farm.location}</p>
+                  <div className="flex items-center gap-4 text-xs text-gray-500">
+                    <span>
+                      Size: {farm.size} {farm.unit}
+                    </span>
+                    <span>Crop: {farm.cropType || "Not specified"}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Current Weather Overview */}
       {current && (
@@ -226,9 +392,12 @@ export default function Dashboard(){
                     <span className="text-sm font-medium">Temperature</span>
                   </div>
                   <div className="text-3xl font-bold text-blue-800">
-                    <Counter end={current.temp} duration={1} />°C
+                    <Counter end={current.temp} duration={1} />
+                    °C
                   </div>
-                  <div className="text-sm text-blue-600">Feels like {current.feelsLike}°C</div>
+                  <div className="text-sm text-blue-600">
+                    Feels like {current.feelsLike}°C
+                  </div>
                 </div>
                 <div className="text-4xl">🌡️</div>
               </div>
@@ -247,7 +416,11 @@ export default function Dashboard(){
                     <Counter end={current.humidity} duration={1} />%
                   </div>
                   <div className="text-sm text-green-600">
-                    {current.humidity > 70 ? 'High' : current.humidity > 40 ? 'Moderate' : 'Low'}
+                    {current.humidity > 70
+                      ? "High"
+                      : current.humidity > 40
+                      ? "Moderate"
+                      : "Low"}
                   </div>
                 </div>
                 <div className="text-4xl">💧</div>
@@ -267,7 +440,11 @@ export default function Dashboard(){
                     <Counter end={current.wind} duration={1} /> km/h
                   </div>
                   <div className="text-sm text-gray-600">
-                    {current.wind > 15 ? 'Strong' : current.wind > 8 ? 'Moderate' : 'Light'}
+                    {current.wind > 15
+                      ? "Strong"
+                      : current.wind > 8
+                      ? "Moderate"
+                      : "Light"}
                   </div>
                 </div>
                 <div className="text-4xl">💨</div>
@@ -287,7 +464,11 @@ export default function Dashboard(){
                     <Counter end={current.uvIndex} duration={1} />
                   </div>
                   <div className="text-sm text-yellow-600">
-                    {current.uvIndex > 7 ? 'Very High' : current.uvIndex > 5 ? 'High' : 'Moderate'}
+                    {current.uvIndex > 7
+                      ? "Very High"
+                      : current.uvIndex > 5
+                      ? "High"
+                      : "Moderate"}
                   </div>
                 </div>
                 <div className="text-4xl">☀️</div>
@@ -303,7 +484,7 @@ export default function Dashboard(){
         <Card className="lg:col-span-1">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <ThermometerSun className="text-orange-600" size={20}/>
+              <ThermometerSun className="text-orange-600" size={20} />
               Temperature Trend (7d)
             </CardTitle>
             <CardDescription>Daily high and low temperatures</CardDescription>
@@ -314,16 +495,39 @@ export default function Dashboard(){
                 <div className="h-32 flex items-end justify-between">
                   <div className="flex flex-col items-center space-y-2">
                     <div className="text-xs text-gray-500">High</div>
-                    <div className="w-8 bg-gradient-to-t from-orange-400 to-orange-200 rounded-t"
-                         style={{height: `${Math.max(20, (Math.max(...highs) - Math.min(...highs)) > 0 ? ((highs[0] - Math.min(...highs)) / (Math.max(...highs) - Math.min(...highs))) * 100 : 50)}px`}}>
-                    </div>
+                    <div
+                      className="w-8 bg-gradient-to-t from-orange-400 to-orange-200 rounded-t"
+                      style={{
+                        height: `${Math.max(
+                          20,
+                          Math.max(...highs) - Math.min(...highs) > 0
+                            ? ((highs[0] - Math.min(...highs)) /
+                                (Math.max(...highs) - Math.min(...highs))) *
+                                100
+                            : 50
+                        )}px`,
+                      }}
+                    ></div>
                     <div className="text-xs font-medium">{highs[0]}°</div>
                   </div>
                   {highs.slice(1, 7).map((temp, i) => (
-                    <div key={i} className="flex flex-col items-center space-y-2">
-                      <div className="w-8 bg-gradient-to-t from-orange-400 to-orange-200 rounded-t"
-                           style={{height: `${Math.max(20, (Math.max(...highs) - Math.min(...highs)) > 0 ? ((temp - Math.min(...highs)) / (Math.max(...highs) - Math.min(...highs))) * 100 : 50)}px`}}>
-                      </div>
+                    <div
+                      key={i}
+                      className="flex flex-col items-center space-y-2"
+                    >
+                      <div
+                        className="w-8 bg-gradient-to-t from-orange-400 to-orange-200 rounded-t"
+                        style={{
+                          height: `${Math.max(
+                            20,
+                            Math.max(...highs) - Math.min(...highs) > 0
+                              ? ((temp - Math.min(...highs)) /
+                                  (Math.max(...highs) - Math.min(...highs))) *
+                                  100
+                              : 50
+                          )}px`,
+                        }}
+                      ></div>
                       <div className="text-xs font-medium">{temp}°</div>
                     </div>
                   ))}
@@ -344,7 +548,7 @@ export default function Dashboard(){
         <Card className="lg:col-span-1">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <CloudRain className="text-blue-600" size={20}/>
+              <CloudRain className="text-blue-600" size={20} />
               Rain Probability (7d)
             </CardTitle>
             <CardDescription>Plan irrigation and spray windows</CardDescription>
@@ -354,10 +558,14 @@ export default function Dashboard(){
               <div className="space-y-4">
                 <div className="h-32 flex items-end justify-between">
                   {rain.map((prob, i) => (
-                    <div key={i} className="flex flex-col items-center space-y-2">
-                      <div className="w-8 bg-gradient-to-t from-blue-400 to-blue-200 rounded-t"
-                           style={{height: `${Math.max(20, prob)}px`}}>
-                      </div>
+                    <div
+                      key={i}
+                      className="flex flex-col items-center space-y-2"
+                    >
+                      <div
+                        className="w-8 bg-gradient-to-t from-blue-400 to-blue-200 rounded-t"
+                        style={{ height: `${Math.max(20, prob)}px` }}
+                      ></div>
                       <div className="text-xs font-medium">{prob}%</div>
                     </div>
                   ))}
@@ -378,7 +586,7 @@ export default function Dashboard(){
         <Card className="lg:col-span-1">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Droplets className="text-green-600" size={20}/>
+              <Droplets className="text-green-600" size={20} />
               Humidity Level
             </CardTitle>
             <CardDescription>Current humidity with trend</CardDescription>
@@ -388,11 +596,15 @@ export default function Dashboard(){
               <div className="space-y-4">
                 <Radial value={current.humidity} size={120} />
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-green-600">{current.humidity}%</div>
+                  <div className="text-2xl font-bold text-green-600">
+                    {current.humidity}%
+                  </div>
                   <div className="text-sm text-gray-500">
-                    {current.humidity > 70 ? 'High humidity - watch for diseases' :
-                     current.humidity > 40 ? 'Ideal humidity range' :
-                     'Low humidity - increase watering'}
+                    {current.humidity > 70
+                      ? "High humidity - watch for diseases"
+                      : current.humidity > 40
+                      ? "Ideal humidity range"
+                      : "Low humidity - increase watering"}
                   </div>
                 </div>
               </div>
@@ -410,22 +622,34 @@ export default function Dashboard(){
         <Card className="mb-6">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <AlertTriangle className="text-amber-600" size={20}/>
+              <AlertTriangle className="text-amber-600" size={20} />
               Smart Farming Advisories
             </CardTitle>
-            <CardDescription>AI-powered recommendations based on current conditions</CardDescription>
+            <CardDescription>
+              AI-powered recommendations based on current conditions
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
               {advisories.map((advisory, index) => {
                 const IconComponent = advisory.icon;
                 return (
-                  <div key={index} className={`flex items-start gap-3 p-4 rounded-lg border-l-4 ${
-                    advisory.type === 'warning' ? 'bg-orange-50 border-orange-400' : 'bg-blue-50 border-blue-400'
-                  }`}>
-                    <IconComponent className={`mt-0.5 ${advisory.color}`} size={20} />
+                  <div
+                    key={index}
+                    className={`flex items-start gap-3 p-4 rounded-lg border-l-4 ${
+                      advisory.type === "warning"
+                        ? "bg-orange-50 border-orange-400"
+                        : "bg-blue-50 border-blue-400"
+                    }`}
+                  >
+                    <IconComponent
+                      className={`mt-0.5 ${advisory.color}`}
+                      size={20}
+                    />
                     <div className="flex-1">
-                      <p className="text-sm font-medium text-gray-800">{advisory.text}</p>
+                      <p className="text-sm font-medium text-gray-800">
+                        {advisory.text}
+                      </p>
                     </div>
                   </div>
                 );
@@ -441,25 +665,31 @@ export default function Dashboard(){
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-sm">
-                <Eye className="text-purple-600" size={16}/>
+                <Eye className="text-purple-600" size={16} />
                 Visibility
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-purple-600">{current.visibility} km</div>
-              <div className="text-xs text-gray-500">Clear visibility for field work</div>
+              <div className="text-2xl font-bold text-purple-600">
+                {current.visibility} km
+              </div>
+              <div className="text-xs text-gray-500">
+                Clear visibility for field work
+              </div>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-sm">
-                <Activity className="text-indigo-600" size={16}/>
+                <Activity className="text-indigo-600" size={16} />
                 Pressure
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-indigo-600">{current.pressure} hPa</div>
+              <div className="text-2xl font-bold text-indigo-600">
+                {current.pressure} hPa
+              </div>
               <div className="text-xs text-gray-500">Atmospheric pressure</div>
             </CardContent>
           </Card>
@@ -467,12 +697,14 @@ export default function Dashboard(){
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-sm">
-                <TrendingUp className="text-emerald-600" size={16}/>
+                <TrendingUp className="text-emerald-600" size={16} />
                 Precipitation
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-emerald-600">{current.precip} mm</div>
+              <div className="text-2xl font-bold text-emerald-600">
+                {current.precip} mm
+              </div>
               <div className="text-xs text-gray-500">Current precipitation</div>
             </CardContent>
           </Card>
