@@ -10,9 +10,8 @@ import {
   Phone,
   Ruler,
   Save,
-  Settings,
   Sprout,
-  User,
+  User
 } from "lucide-react";
 import React, { useState } from "react";
 import Page from "../components/Page";
@@ -35,19 +34,21 @@ export default function Profile() {
   const { t } = useI18n();
   const { state, updateProfile } = useApp();
   const { user } = useAuth();
-  const { farmer, farms, activities, createFarmer, updateFarmer } = useData();
+  const { farmer, farms, activities, createFarmer, updateFarmer, createFarm, updateFarm } = useData();
 
   const [form, setForm] = useState({
+    // Farmer fields
     name: farmer?.name || user?.displayName || "",
-    email: user?.email || "",
     phoneNumber: farmer?.phoneNumber || "",
     location: farmer?.location || "",
-    landSize: farmer?.landSize || "",
-    crop: farmer?.crop || "",
-    soil: farmer?.soil || "",
-    irrigation: farmer?.irrigation || "",
-    experience: farmer?.experience || "",
-    farmType: farmer?.farmType || "",
+    // Farm fields (for primary farm)
+    sizeInAcres: "",
+    soilType: "",
+    irrigation: "",
+    farmLocation: "",
+    crops: [],
+    // Additional fields
+ 
   });
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -61,42 +62,67 @@ export default function Profile() {
         name: farmer.name || user?.displayName || "",
         phoneNumber: farmer.phoneNumber || "",
         location: farmer.location || "",
-        landSize: farmer.landSize || "",
-        crop: farmer.crop || "",
-        soil: farmer.soil || "",
-        irrigation: farmer.irrigation || "",
-        experience: farmer.experience || "",
-        farmType: farmer.farmType || "",
+
       }));
     }
-  }, [farmer, user]);
+
+    // Update farm data if available
+    if (farms && farms.length > 0) {
+      const primaryFarm = farms[0]; // Use first farm as primary
+      setForm((prev) => ({
+        ...prev,
+        sizeInAcres: primaryFarm.sizeInAcres || "",
+        soilType: primaryFarm.soilType || "",
+        irrigation: primaryFarm.irrigation || "",
+        farmLocation: primaryFarm.location || "",
+        crops: primaryFarm.crops || [],
+      }));
+    }
+  }, [farmer, farms, user]);
 
   const onSave = async () => {
     setIsSaving(true);
     try {
-      // Ensure required fields are present
+      // Prepare farmer data
       const farmerData = {
         name: form.name || "",
         phoneNumber: form.phoneNumber || "",
         location: form.location || "",
-        // Include optional fields if they exist
-        ...(form.landSize && { landSize: form.landSize }),
-        ...(form.crop && { crop: form.crop }),
-        ...(form.soil && { soil: form.soil }),
-        ...(form.irrigation && { irrigation: form.irrigation }),
-        ...(form.experience && { experience: form.experience }),
-        ...(form.farmType && { farmType: form.farmType }),
+
       };
 
-      console.log("Sending farmer data:", farmerData);
+      console.log("Saving farmer data:", farmerData);
 
+      let savedFarmer;
       if (farmer) {
         // Update existing farmer
-        await updateFarmer(farmer._id, farmerData);
+        savedFarmer = await updateFarmer(farmer._id, farmerData);
       } else {
         // Create new farmer
-        await createFarmer(farmerData);
+        savedFarmer = await createFarmer(farmerData);
       }
+
+      // Prepare farm data
+      const farmData = {
+        farmer: savedFarmer._id,
+        sizeInAcres: parseFloat(form.sizeInAcres) || 0,
+        soilType: form.soilType || "",
+        irrigation: form.irrigation || "",
+        location: form.farmLocation || "",
+        crops: Array.isArray(form.crops) ? form.crops : form.crops.split(',').map(c => c.trim()).filter(c => c),
+      };
+
+      console.log("Saving farm data:", farmData);
+
+      // Handle farm data
+      if (farms && farms.length > 0) {
+        // Update existing farm
+        await updateFarm(farms[0]._id, farmData);
+      } else {
+        // Create new farm
+        await createFarm(farmData);
+      }
+
       setSaveStatus("success");
       setIsEditing(false);
       setTimeout(() => setSaveStatus(""), 3000);
@@ -111,46 +137,68 @@ export default function Profile() {
   };
 
   const formFields = [
-    { name: "name", label: t["profile.name"], icon: User, required: true },
-    {
-      name: "email",
-      label: t["profile.email"],
-      icon: User,
-      required: true,
-      disabled: true,
-    },
+    // Farmer Information
+    { name: "name", label: t["profile.name"], icon: User, required: true, section: "farmer" },
     {
       name: "phoneNumber",
       label: t["profile.phone"],
       icon: Phone,
-      required: false,
+      required: true,
+      section: "farmer"
     },
     {
       name: "location",
       label: t["profile.location"],
       icon: MapPin,
-      required: false,
+      required: true,
+      section: "farmer"
+    },
+
+
+    // Farm Information
+    {
+      name: "sizeInAcres",
+      label: t["profile.sizeInAcres"],
+      icon: Ruler,
+      required: true,
+      type: "number",
+      section: "farm"
     },
     {
-      name: "landSize",
-      label: t["profile.landSize"],
-      icon: Ruler,
-      required: false,
+      name: "soilType",
+      label: t["profile.soilType"],
+      icon: Sprout,
+      required: true,
+      section: "farm"
     },
-    { name: "crop", label: t["profile.crop"], icon: Crop, required: false },
-    { name: "soil", label: t["profile.soil"], icon: Sprout, required: false },
     {
       name: "irrigation",
       label: t["profile.irrigation"],
       icon: Droplets,
-      required: false,
+      required: true,
+      section: "farm"
+    },
+    {
+      name: "farmLocation",
+      label: t["profile.farmLocation"],
+      icon: MapPin,
+      required: true,
+      section: "farm"
+    },
+    {
+      name: "crops",
+      label: t["profile.crops"],
+      icon: Crop,
+      required: true,
+      type: "textarea",
+      section: "farm"
     },
   ];
 
   return (
     <Page
-      title="Farmer Profile"
-      subtitle="Manage your farming profile and preferences"
+      title={t["profile.title"]}
+      subtitle={t["profile.subtitle"]}
     >
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Profile Card */}
@@ -175,11 +223,11 @@ export default function Profile() {
               </div>
               <div className="flex items-center gap-2 text-sm text-gray-600">
                 <Ruler size={16} />
-                <span>{form.landSize || "Land size not specified"}</span>
+                <span>{form.sizeInAcres ? `${form.sizeInAcres} acres` : "Farm size not specified"}</span>
               </div>
               <div className="flex items-center gap-2 text-sm text-gray-600">
                 <Crop size={16} />
-                <span>{form.crop || "Crop not specified"}</span>
+                <span>{Array.isArray(form.crops) ? form.crops.join(', ') : form.crops || "Crops not specified"}</span>
               </div>
             </div>
           </CardContent>
@@ -271,50 +319,120 @@ export default function Profile() {
               </motion.div>
             )}
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {formFields.map((field, index) => {
-                const IconComponent = field.icon;
-                return (
-                  <motion.div
-                    key={field.name}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    className="space-y-2"
-                  >
-                    <Label className="flex items-center gap-2">
-                      <IconComponent size={16} className="text-leaf-600" />
-                      {field.label}
-                      {field.required && (
-                        <span className="text-red-500">*</span>
-                      )}
-                    </Label>
-                    <Input
-                      value={form[field.name] || ""}
-                      onChange={(e) =>
-                        setForm({ ...form, [field.name]: e.target.value })
-                      }
-                      disabled={!isEditing || field.disabled}
-                      className={!isEditing ? "bg-gray-50" : ""}
-                      placeholder={`Enter ${
-                        field.label?.toLowerCase() || field.name
-                      }`}
-                    />
-                  </motion.div>
-                );
-              })}
+            {/* Farmer Information Section */}
+            <div className="mb-8">
+              <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                <User size={20} className="text-leaf-600" />
+                {t["profile.farmerInfo"]}
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {formFields
+                  .filter(field => field.section === "farmer")
+                  .map((field, index) => {
+                    const IconComponent = field.icon;
+                    return (
+                      <motion.div
+                        key={field.name}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                        className="space-y-2"
+                      >
+                        <Label className="flex items-center gap-2">
+                          <IconComponent size={16} className="text-leaf-600" />
+                          {field.label}
+                          {field.required && (
+                            <span className="text-red-500">*</span>
+                          )}
+                        </Label>
+                        <Input
+                          type={field.type || "text"}
+                          value={form[field.name] || ""}
+                          onChange={(e) =>
+                            setForm({ ...form, [field.name]: e.target.value })
+                          }
+                          disabled={!isEditing || field.disabled}
+                          className={!isEditing ? "bg-gray-50" : ""}
+                          placeholder={`Enter ${
+                            field.label?.toLowerCase() || field.name
+                          }`}
+                        />
+                      </motion.div>
+                    );
+                  })}
+              </div>
+            </div>
+
+            {/* Farm Information Section */}
+            <div className="mb-8">
+              <h3 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                <Crop size={20} className="text-leaf-600" />
+                {t["profile.farmInfo"]}
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {formFields
+                  .filter(field => field.section === "farm")
+                  .map((field, index) => {
+                    const IconComponent = field.icon;
+                    return (
+                      <motion.div
+                        key={field.name}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                        className="space-y-2"
+                      >
+                        <Label className="flex items-center gap-2">
+                          <IconComponent size={16} className="text-leaf-600" />
+                          {field.label}
+                          {field.required && (
+                            <span className="text-red-500">*</span>
+                          )}
+                        </Label>
+                        {field.type === "textarea" ? (
+                          <textarea
+                            value={Array.isArray(form[field.name]) ? form[field.name].join(', ') : form[field.name] || ""}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              const cropsArray = value.split(',').map(c => c.trim()).filter(c => c);
+                              setForm({ ...form, [field.name]: cropsArray });
+                            }}
+                            disabled={!isEditing}
+                            className={`w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-leaf-500 focus:border-transparent resize-none ${
+                              !isEditing ? "bg-gray-50" : ""
+                            }`}
+                            rows={3}
+                            placeholder={`Enter ${
+                              field.label?.toLowerCase() || field.name
+                            }`}
+                          />
+                        ) : (
+                          <Input
+                            type={field.type || "text"}
+                            value={form[field.name] || ""}
+                            onChange={(e) =>
+                              setForm({ ...form, [field.name]: e.target.value })
+                            }
+                            disabled={!isEditing || field.disabled}
+                            className={!isEditing ? "bg-gray-50" : ""}
+                            placeholder={`Enter ${
+                              field.label?.toLowerCase() || field.name
+                            }`}
+                          />
+                        )}
+                      </motion.div>
+                    );
+                  })}
+              </div>
             </div>
 
             {/* Additional Info */}
             <div className="mt-6 p-4 bg-leaf-50 rounded-lg">
               <h4 className="font-medium text-leaf-800 mb-2">
-                Farming Statistics
+                {t["profile.farmingStats"]}
               </h4>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
                 <div>
-                  <div className="text-2xl font-bold text-leaf-600">
-                    {farmer?.experience || "0"}
-                  </div>
                   <div className="text-xs text-gray-600">Years Experience</div>
                 </div>
                 <div>
@@ -331,7 +449,7 @@ export default function Profile() {
                 </div>
                 <div>
                   <div className="text-2xl font-bold text-leaf-600">
-                    {farmer?.farmType || "N/A"}
+                    {form.farmType || "N/A"}
                   </div>
                   <div className="text-xs text-gray-600">Farm Type</div>
                 </div>

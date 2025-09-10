@@ -70,7 +70,7 @@ export default function Landing() {
                 </div>
                 <div className="p-4 rounded-xl bg-leaf-50">
                   <p className="text-soil-700">{t["landing.stats.water"]}</p>
-                  <p className="text-3xl font-bold flex items-baseline gap-1">-<Counter to={15}/> <span className="text-base">%</span></p>
+                  <p className="text-3xl font-bold flex items-baseline gap-1"><Counter to={15}/> <span className="text-base">%</span></p>
                 </div>
                 <div className="p-4 rounded-xl bg-leaf-50">
                   <p className="text-soil-700">{t["landing.stats.season"]}</p>
