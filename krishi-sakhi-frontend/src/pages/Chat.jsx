@@ -1,25 +1,35 @@
 import { motion } from "framer-motion";
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Page from "../components/Page";
 import Button from "../components/ui/button";
 import Input from "../components/ui/input";
 import { useI18n } from "../context/I18nContext";
+import { useChat } from "../context/ChatContext";
 
 export default function Chat() {
   const { t } = useI18n();
-  const [messages, setMessages] = useState([
-    { role: "assistant", content: t["chat.welcomeMessage"] },
-  ]);
+  const { messages, isLoading, sendMessage, clearChat } = useChat();
   const [text, setText] = useState("");
+  const messagesEndRef = useRef(null);
 
-  const send = () => {
-    if (!text.trim()) return;
-    setMessages((m) => [
-      ...m,
-      { role: "user", content: text },
-      { role: "assistant", content: t["chat.demoMessage"] },
-    ]);
+  // Auto-scroll to bottom when new messages arrive
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  const send = async () => {
+    if (!text.trim() || isLoading) return;
+    
+    const userMessage = text.trim();
     setText("");
+    await sendMessage(userMessage);
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      send();
+    }
   };
 
   return (
@@ -42,10 +52,28 @@ export default function Chat() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.1 }}
           >
-            {m.content}
+            <div className="whitespace-pre-wrap">{m.content}</div>
           </motion.div>
         ))}
+        
+        {/* Loading indicator */}
+        {isLoading && (
+          <motion.div
+            className="max-w-[75%] px-3 py-2 rounded-2xl bg-leaf-50"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
+            <div className="flex items-center space-x-2">
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-leaf-600"></div>
+              <span className="text-sm text-gray-600">ക്രിഷി സഖി ചിന്തിക്കുന്നു...</span>
+            </div>
+          </motion.div>
+        )}
+        
+        {/* Auto-scroll anchor */}
+        <div ref={messagesEndRef} />
       </motion.div>
+      
       <motion.div
         className="mt-3 flex gap-2"
         initial={{ opacity: 0, y: 20 }}
@@ -55,9 +83,25 @@ export default function Chat() {
         <Input
           value={text}
           onChange={(e) => setText(e.target.value)}
-          placeholder={t["chat.placeholder"]}
+          onKeyPress={handleKeyPress}
+          placeholder={t["chat.placeholder"] || "നിങ്ങളുടെ ചോദ്യം ടൈപ്പ് ചെയ്യുക..."}
+          disabled={isLoading}
         />
-        <Button onClick={send}>{t["chat.send"]}</Button>
+        <Button 
+          onClick={send} 
+          disabled={isLoading || !text.trim()}
+          className="min-w-[80px]"
+        >
+          {isLoading ? "..." : (t["chat.send"] || "അയയ്ക്കുക")}
+        </Button>
+        <Button 
+          onClick={clearChat}
+          variant="outline"
+          className="min-w-[80px]"
+          disabled={isLoading}
+        >
+          {t["chat.clear"] || "മായ്ക്കുക"}
+        </Button>
       </motion.div>
     </Page>
   );
